@@ -1,0 +1,14 @@
+/* Arquivo index.css limpo para evitar conflitos com GlobalStyles.css */
+/* Mantendo apenas reset básico e configurações essenciais */
+
+/* Removendo todos os estilos que conflitam com GlobalStyles.css */
+/* Todos os estilos necessários foram migrados para GlobalStyles.css */
+
+/* Mantendo apenas configurações básicas de renderização */
+html {
+  -webkit-text-size-adjust: 100%;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
