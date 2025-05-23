@@ -6,7 +6,7 @@ FROM node:18-alpine as base
 WORKDIR /app
 
 # Copiar arquivos de configuração
-COPY package*.json ./
+COPY client/package*.json ./
 
 # Instalar dependências
 RUN npm ci
@@ -16,7 +16,7 @@ FROM base as development
 WORKDIR /app
 
 # Copiar todo o código fonte
-COPY ./
+COPY client/ ./
 
 # Expor porta para desenvolvimento
 EXPOSE 5173
