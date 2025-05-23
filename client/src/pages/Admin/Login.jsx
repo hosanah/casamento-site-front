@@ -73,9 +73,6 @@ const Login = () => {
     <LoginContainer>
       <LoginCard>
         <Logo>
-          <h1>
-            Marília <span>&</span> Iago
-          </h1>
           <p>Painel Administrativo</p>
         </Logo>
         
