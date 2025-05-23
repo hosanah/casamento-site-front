@@ -1,6 +1,6 @@
 # Dockerfile multi-estágio para ambiente de desenvolvimento e produção
 # Imagem base para ambos os ambientes
-FROM node:18-alpine as base
+FROM node:18-alpine AS base
 
 # Diretório de trabalho
 WORKDIR /app
@@ -12,7 +12,7 @@ COPY client/package*.json ./
 RUN npm ci
 
 # Estágio de build
-FROM base as build
+FROM base AS build
 WORKDIR /app
 
 # Copiar todo o código fonte
@@ -22,7 +22,7 @@ COPY client/ ./
 RUN npm run build
 
 # Estágio de produção
-FROM nginx:alpine as production
+FROM nginx:alpine AS production
 
 # Copiar arquivos estáticos da build para o Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
