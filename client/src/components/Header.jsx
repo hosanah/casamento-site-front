@@ -138,13 +138,13 @@ const Header = () => {
             <NavLink to="/lista-de-presentes" active={isActive('/lista-de-presentes')}>Lista de Presentes</NavLink>
           </NavItem>
           <NavItem>
+            <NavLink to="/album" active={isActive('/album')}>Álbum</NavLink>
+          </NavItem>
+          <NavItem>
             <NavLink to="/confirme-sua-presenca" active={isActive('/confirme-sua-presenca')}>Confirme sua Presença</NavLink>
           </NavItem>
           <NavItem>
             <NavLink to="/informacoes" active={isActive('/informacoes')}>Informações</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/album" active={isActive('/album')}>Álbum</NavLink>
           </NavItem>
         </NavMenu>
       </HeaderInner>

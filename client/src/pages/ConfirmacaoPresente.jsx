@@ -96,6 +96,26 @@ const ErrorContainer = styled.div`
   max-width: 800px;
 `;
 
+const DebugInfo = styled.div`
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  text-align: left;
+  font-family: monospace;
+  font-size: 0.9rem;
+  
+  h4 {
+    margin-bottom: 10px;
+    color: var(--accent);
+  }
+  
+  p {
+    margin-bottom: 5px;
+    word-break: break-all;
+  }
+`;
+
 const ConfirmacaoPresente = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -103,24 +123,57 @@ const ConfirmacaoPresente = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [orderDetails, setOrderDetails] = useState(null);
+  const [debugInfo, setDebugInfo] = useState({
+    apiUrl: API_URL,
+    orderId: null,
+    requestUrl: null,
+    responseStatus: null,
+    responseData: null,
+    errorMessage: null
+  });
   
   const status = searchParams.get('status') || 'pending';
-  const orderId = searchParams.get('order_id');
+  const orderId = searchParams.get('order_id') || searchParams.get('external_reference');
   
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      // Atualizar informações de debug
+      setDebugInfo(prev => ({
+        ...prev,
+        orderId,
+        requestUrl: orderId ? `${API_URL}/api/mercadopago/order/${orderId}` : null
+      }));
+      
       if (!orderId) {
-        setError('ID do pedido não encontrado');
+        setError('ID do pedido não encontrado na URL. Verifique os parâmetros de retorno do Mercado Pago.');
         setLoading(false);
         return;
       }
       
       try {
+        console.log(`Buscando detalhes do pedido: ${API_URL}/api/mercadopago/order/${orderId}`);
         const response = await axios.get(`${API_URL}/api/mercadopago/order/${orderId}`);
+        
+        // Atualizar informações de debug com a resposta
+        setDebugInfo(prev => ({
+          ...prev,
+          responseStatus: response.status,
+          responseData: JSON.stringify(response.data, null, 2)
+        }));
+        
         setOrderDetails(response.data);
       } catch (error) {
         console.error('Erro ao buscar detalhes do pedido:', error);
-        setError('Não foi possível carregar os detalhes do pedido');
+        
+        // Atualizar informações de debug com o erro
+        setDebugInfo(prev => ({
+          ...prev,
+          responseStatus: error.response?.status || 'Erro de conexão',
+          errorMessage: error.message,
+          errorDetails: error.response?.data ? JSON.stringify(error.response.data, null, 2) : null
+        }));
+        
+        setError('Não foi possível carregar os detalhes do pedido. Verifique se o backend está configurado corretamente.');
       } finally {
         setLoading(false);
       }
@@ -175,7 +228,7 @@ const ConfirmacaoPresente = () => {
   };
   
   const handleBackToGifts = () => {
-    navigate('/presentes');
+    navigate('/lista-de-presentes');
   };
   
   if (loading) {
@@ -183,19 +236,6 @@ const ConfirmacaoPresente = () => {
       <PageContainer>
         <PageContent>
           <LoadingContainer>Carregando detalhes do pedido...</LoadingContainer>
-        </PageContent>
-      </PageContainer>
-    );
-  }
-  
-  if (error) {
-    return (
-      <PageContainer>
-        <PageContent>
-          <ErrorContainer>{error}</ErrorContainer>
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <Button onClick={handleBackToGifts}>Voltar para Lista de Presentes</Button>
-          </div>
         </PageContent>
       </PageContainer>
     );
@@ -209,7 +249,9 @@ const ConfirmacaoPresente = () => {
           <h2>{getStatusTitle()}</h2>
           <p>{getStatusMessage()}</p>
           
-          {orderDetails && (
+          {error && <ErrorContainer>{error}</ErrorContainer>}
+          
+          {orderDetails && orderDetails.present && (
             <>
               <p>Presente: <strong>{orderDetails.present.name}</strong></p>
               <p>Valor: <strong>
@@ -222,6 +264,26 @@ const ConfirmacaoPresente = () => {
           )}
           
           <Button onClick={handleBackToGifts}>Voltar para Lista de Presentes</Button>
+          
+          {/* Informações de debug - remover em produção */}
+          <DebugInfo>
+            <h4>Informações de Debug:</h4>
+            <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>Order ID:</strong> {debugInfo.orderId || 'Não encontrado'}</p>
+            <p><strong>Request URL:</strong> {debugInfo.requestUrl || 'N/A'}</p>
+            <p><strong>Response Status:</strong> {debugInfo.responseStatus || 'N/A'}</p>
+            {debugInfo.errorMessage && (
+              <p><strong>Error:</strong> {debugInfo.errorMessage}</p>
+            )}
+            {orderDetails && (
+              <div>
+                <p><strong>Dados do pedido:</strong></p>
+                <pre style={{ overflowX: 'auto', maxWidth: '100%' }}>
+                  {JSON.stringify(orderDetails, null, 2)}
+                </pre>
+              </div>
+            )}
+          </DebugInfo>
         </ConfirmationCard>
       </PageContent>
     </PageContainer>
