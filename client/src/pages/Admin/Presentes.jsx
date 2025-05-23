@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -124,7 +125,7 @@ const PresenteImageWithFallback = ({ src, alt }) => {
   
   return (
     <PresenteImage 
-      src={`http://localhost:3001${src}`}
+      src={`${API_URL}${src}`}
       alt={alt}
       onError={() => setHasError(true)}
     />
@@ -187,7 +188,7 @@ const Presentes = () => {
   // Usando useCallback para evitar recriação da função a cada render
   const fetchPresentes = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/presentes');
+      const response = await axios.get(`${API_URL}/api/presentes`);
       setPresentes(response.data);
     } catch (error) {
       console.error('Erro ao buscar presentes:', error);
@@ -299,7 +300,7 @@ const Presentes = () => {
       formData.append('image', imageFile);
       
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:3001/api/presentes/upload', formData, {
+      const response = await axios.post(`${API_URL}/api/presentes/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -348,10 +349,10 @@ const Presentes = () => {
       };
       
       if (modalMode === 'add') {
-        await axios.post('http://localhost:3001/api/presentes', presenteData, { headers });
+        await axios.post(`${API_URL}/api/presentes`, presenteData, { headers });
         setSuccess('Presente adicionado com sucesso!');
       } else {
-        await axios.put(`http://localhost:3001/api/presentes/${currentPresente.id}`, presenteData, { headers });
+        await axios.put(`${API_URL}/api/presentes/${currentPresente.id}`, presenteData, { headers });
         setSuccess('Presente atualizado com sucesso!');
       }
       
@@ -374,7 +375,7 @@ const Presentes = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3001/api/presentes/${id}`, {
+      await axios.delete(`${API_URL}/api/presentes/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -218,7 +219,7 @@ const Historia = () => {
   const fetchEvents = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get('http://localhost:3001/api/story-events');
+      const response = await axios.get(`${API_URL}/api/story-events`);
       
       // Ordenar eventos por ordem e data
       const sortedEvents = response.data.sort((a, b) => {
@@ -322,7 +323,7 @@ const Historia = () => {
   
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3001/api/story-events/upload',
+        `${API_URL}/api/story-events/upload`,
         formData,
         {
           headers: {
@@ -379,10 +380,10 @@ const Historia = () => {
       };
       
       if (modalMode === 'add') {
-        await axios.post('http://localhost:3001/api/story-events', eventData, { headers });
+        await axios.post(`${API_URL}/api/story-events`, eventData, { headers });
         setSuccess('Evento adicionado com sucesso!');
       } else {
-        await axios.put(`http://localhost:3001/api/story-events/${currentEvent.id}`, eventData, { headers });
+        await axios.put(`${API_URL}/api/story-events/${currentEvent.id}`, eventData, { headers });
         setSuccess('Evento atualizado com sucesso!');
       }
       
@@ -405,7 +406,7 @@ const Historia = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3001/api/story-events/${id}`, {
+      await axios.delete(`${API_URL}/api/story-events/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -483,7 +484,7 @@ const Historia = () => {
                 {event.image ? (
                   <EventImage>
                     <img 
-                      src={`http://localhost:3001${event.image}`}
+                      src={`${API_URL}${event.image}`}
                       alt={event.title}
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -601,14 +602,23 @@ const Historia = () => {
                   accept="image/*"
                   onChange={handleImageChange}
                 />
-                <ImageUploadButton type="button" onClick={handleImageClick}>
-                  Selecionar Imagem
-                </ImageUploadButton>
+                <small style={{ display: 'block', marginTop: '0.5rem', color: '#666' }}>
+                  Formatos aceitos: JPG, PNG, GIF, WebP. Tamanho máximo: 5MB.
+                </small>
               </FormGroup>
               
-              <SubmitButton type="submit" disabled={isLoading}>
-                {isLoading ? 'Salvando...' : 'Salvar'}
-              </SubmitButton>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
+                <SecondaryButton 
+                  type="button" 
+                  onClick={handleCloseModal}
+                  style={{ marginRight: '1rem' }}
+                >
+                  Cancelar
+                </SecondaryButton>
+                <SubmitButton type="submit" disabled={isLoading}>
+                  {isLoading ? 'Salvando...' : modalMode === 'add' ? 'Adicionar' : 'Salvar'}
+                </SubmitButton>
+              </div>
             </form>
           </ModalContent>
         </Modal>

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useConfig } from '../contexts/ConfigContext';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const HomeContainer = styled.div`
   width: 100%;
@@ -197,7 +198,7 @@ const Home = () => {
   useEffect(() => {
     const fetchBackgroundImages = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/background-images/active');
+        const response = await axios.get(`${API_URL}/api/background-images/active`);
         if (response.data && response.data.length > 0) {
           setBackgroundImages(response.data);
         } else {
@@ -295,7 +296,7 @@ const Home = () => {
         {backgroundImages.map((image, index) => (
           <BackgroundSlide
             key={image.id}
-            image={`http://localhost:3001${image.path}`}
+            image={`${API_URL}${image.path}`}
             active={index === currentImageIndex}
           />
         ))}

@@ -29,6 +29,7 @@ import {
   DeleteButton
 } from '../../styles/AdminStyles';
 import styled from 'styled-components';
+import API_URL from '../../config/api';
 
 const TabsContainer = styled.div`
   display: flex;
@@ -323,7 +324,7 @@ const SafeImage = ({ src, alt, className, style }) => {
   
   return (
     <img
-      src={`http://localhost:3001${src}`}
+      src={`${API_URL}${src}`}
       alt={alt}
       className={className}
       style={style}
@@ -469,7 +470,7 @@ const Album = () => {
     
     try {
       setIsLoading(true);
-      const response = await axios.get('http://localhost:3001/api/album');
+      const response = await axios.get(`${API_URL}/api/album`);
       if (response.data) {
         setPhotos(response.data);
         setDataFetched(true);
@@ -577,7 +578,7 @@ const Album = () => {
       formData.append('images', imageFile);
       
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:3001/api/album/upload', formData, {
+      const response = await axios.post(`${API_URL}/api/album/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -624,10 +625,10 @@ const Album = () => {
       };
       
       if (modalMode === 'add') {
-        await axios.post('http://localhost:3001/api/album', photoData, { headers });
+        await axios.post(`${API_URL}/api/album`, photoData, { headers });
         setSuccess('Foto adicionada com sucesso!');
       } else {
-        await axios.put(`http://localhost:3001/api/album/${currentPhoto.id}`, photoData, { headers });
+        await axios.put(`${API_URL}/api/album/${currentPhoto.id}`, photoData, { headers });
         setSuccess('Foto atualizada com sucesso!');
       }
       
@@ -653,7 +654,7 @@ const Album = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3001/api/album/${id}`, {
+      await axios.delete(`${API_URL}/api/album/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -672,7 +673,7 @@ const Album = () => {
   const handleToggleActive = async (id, active) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:3001/api/album/${id}/toggle-active`, 
+      await axios.put(`${API_URL}/api/album/${id}/toggle-active`, 
         { active },
         {
           headers: {
@@ -717,7 +718,7 @@ const Album = () => {
         order: index
       }));
       
-      await axios.put('http://localhost:3001/api/album/reorder', {
+      await axios.put(`${API_URL}/api/album/reorder`, {
         photos: updatedPhotos
       }, {
         headers: {
@@ -882,7 +883,7 @@ const Album = () => {
         formData.append('images', file);
       });
       
-      const response = await axios.post('http://localhost:3001/api/album/upload', formData, {
+      const response = await axios.post(`${API_URL}/api/album/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -902,7 +903,7 @@ const Album = () => {
         active: true
       }));
       
-      await axios.post('http://localhost:3001/api/album/batch', {
+      await axios.post(`${API_URL}/api/album/batch`, {
         photos: photosToCreate
       }, {
         headers: {

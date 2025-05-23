@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -200,7 +201,7 @@ const Conteudo = () => {
   const fetchContent = async (section) => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:3001/api/content/${section}`);
+      const response = await axios.get(`${API_URL}/api/content/${section}`);
       
       if (response.data && response.data.content) {
         if (section === 'informacoes') {
@@ -294,7 +295,7 @@ const Conteudo = () => {
         // Salvar os campos de informações como JSON
         const contentJson = JSON.stringify(infoFields);
         
-        await axios.put(`http://localhost:3001/api/content/${activeTab}`, {
+        await axios.put(`${API_URL}/api/content/${activeTab}`, {
           content: contentJson
         }, {
           headers: {
@@ -302,7 +303,7 @@ const Conteudo = () => {
           }
         });
       } else {
-        await axios.put(`http://localhost:3001/api/content/${activeTab}`, {
+        await axios.put(`${API_URL}/api/content/${activeTab}`, {
           content
         }, {
           headers: {

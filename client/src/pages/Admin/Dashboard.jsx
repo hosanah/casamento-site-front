@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useConfig } from '../../contexts/ConfigContext';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -106,15 +107,15 @@ const Dashboard = () => {
         // Em um caso real, teríamos endpoints específicos para estatísticas
         // Aqui estamos simulando com os endpoints existentes
         
-        const rsvpsResponse = await axios.get('http://localhost:3001/api/rsvp', {
+        const rsvpsResponse = await axios.get(`${API_URL}/api/rsvp`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
         
-        const presentesResponse = await axios.get('http://localhost:3001/api/presentes');
+        const presentesResponse = await axios.get(`${API_URL}/api/presentes`);
         
-        const albumResponse = await axios.get('http://localhost:3001/api/album');
+        const albumResponse = await axios.get(`${API_URL}/api/album`);
         
         // Calcular total de fotos em todas as galerias
         let totalFotos = 0;

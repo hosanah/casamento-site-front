@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const PageContainer = styled.div`
   width: 100vw;
@@ -118,7 +119,7 @@ const Informacoes = () => {
   const fetchInformacoes = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3001/api/content/informacoes');
+      const response = await axios.get(`${API_URL}/api/content/informacoes`);
       
       if (response.data && response.data.content) {
         try {

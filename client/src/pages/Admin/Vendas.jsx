@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useConfig } from '../../contexts/ConfigContext';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -184,10 +185,10 @@ const AdminVendas = () => {
       const token = localStorage.getItem('token');
       
       const [salesResponse, statsResponse] = await Promise.all([
-        axios.get('http://localhost:3001/api/sales', {
+        axios.get(`${API_URL}/api/sales`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:3001/api/sales/stats/summary', {
+        axios.get(`${API_URL}/api/sales/stats/summary`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import API_URL from '../config/api';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -271,7 +272,7 @@ const Album = () => {
         setIsLoading(true);
         
         // Buscar apenas fotos ativas
-        const response = await axios.get('http://localhost:3001/api/album?active=true');
+        const response = await axios.get(`${API_URL}/api/album?active=true`);
         
         if (response.data) {
           setAlbums(response.data);
@@ -359,7 +360,7 @@ const Album = () => {
     if (!imagePath) return null;
     
     if (imagePath.startsWith('/')) {
-      return `http://localhost:3001${imagePath}`;
+      return `${API_URL}${imagePath}`;
     }
     
     return imagePath;

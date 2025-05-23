@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 // Cria o contexto
 const ConfigContext = createContext();
@@ -26,7 +27,7 @@ export const ConfigProvider = ({ children }) => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get('http://localhost:3001/api/config');
+      const response = await axios.get(`${API_URL}/api/config`);
 
       if (response.data) {
         setConfig((prev) => ({

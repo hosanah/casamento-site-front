@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -238,7 +239,7 @@ const Config = () => {
   
   const fetchConfig = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/config');
+      const response = await axios.get(`${API_URL}/api/config`);
       
       if (response.data) {
         setConfig({
@@ -265,7 +266,7 @@ const Config = () => {
   
   const fetchBackgroundImages = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/background-images');
+      const response = await axios.get(`${API_URL}/api/background-images`);
       setBackgroundImages(response.data);
     } catch (error) {
       console.error('Erro ao buscar imagens de fundo:', error);
@@ -352,7 +353,7 @@ const Config = () => {
         const formData = new FormData();
         formData.append('image', file);
         
-        await axios.post('http://localhost:3001/api/background-images/upload', formData, {
+        await axios.post(`${API_URL}/api/background-images/upload`, formData, {
           headers: {
             ...headers,
             'Content-Type': 'multipart/form-data'
@@ -379,7 +380,7 @@ const Config = () => {
         Authorization: `Bearer ${token}`
       };
       
-      await axios.delete(`http://localhost:3001/api/background-images/${id}`, { headers });
+      await axios.delete(`${API_URL}/api/background-images/${id}`, { headers });
       
       // Atualizar lista de imagens
       setBackgroundImages(backgroundImages.filter(img => img.id !== id));
@@ -397,7 +398,7 @@ const Config = () => {
         Authorization: `Bearer ${token}`
       };
       
-      await axios.put(`http://localhost:3001/api/background-images/${id}`, 
+      await axios.put(`${API_URL}/api/background-images/${id}`, 
         { active: !active }, 
         { headers }
       );
@@ -431,7 +432,7 @@ const Config = () => {
       };
       
       // Enviar nova ordem para o servidor
-      await axios.post('http://localhost:3001/api/background-images/reorder', 
+      await axios.post(`${API_URL}/api/background-images/reorder`, 
         { order: items.map(item => item.id) }, 
         { headers }
       );
@@ -485,7 +486,7 @@ const Config = () => {
         formData.append('qrcode', qrCodeImage);
         
         try {
-          const uploadResponse = await axios.post('http://localhost:3001/api/config/upload-qrcode', formData, {
+          const uploadResponse = await axios.post(`${API_URL}/api/config/upload-qrcode`, formData, {
             headers: {
               ...headers,
               'Content-Type': 'multipart/form-data'
@@ -506,7 +507,7 @@ const Config = () => {
       }
       
       // Depois, atualizar as demais configurações
-      await axios.put('http://localhost:3001/api/config', config, { headers });
+      await axios.put(`${API_URL}/api/config`, config, { headers });
       
       setSuccess('Configurações salvas com sucesso!');
       
@@ -603,28 +604,136 @@ const Config = () => {
           </ConfigContainer>
           
           <ConfigContainer>
-            <ConfigTitle>Imagens de Fundo (Slideshow)</ConfigTitle>
-            <p>Adicione imagens para o slideshow da página inicial. As imagens serão exibidas em rotação a cada 3 segundos.</p>
+            <ConfigTitle>Configurações de PIX</ConfigTitle>
             
-            <DropZone 
-              onClick={handleBackgroundImageClick}
+            <FormGroup>
+              <Label htmlFor="pixKey">Chave PIX</Label>
+              <Input
+                type="text"
+                id="pixKey"
+                name="pixKey"
+                value={config.pixKey}
+                onChange={handleChange}
+                placeholder="Ex: email@exemplo.com, 12345678900, telefone, etc."
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <Label htmlFor="pixDescription">Descrição do PIX</Label>
+              <TextArea
+                id="pixDescription"
+                name="pixDescription"
+                value={config.pixDescription}
+                onChange={handleChange}
+                placeholder="Ex: Presente de casamento para Noiva e Noivo"
+                rows={3}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <Label>QR Code do PIX</Label>
+              <ImagePreview onClick={handleQrCodeClick}>
+                {qrCodePreview ? (
+                  <img 
+                    src={qrCodePreview.startsWith('data:') ? qrCodePreview : `${API_URL}${qrCodePreview}`} 
+                    alt="QR Code do PIX" 
+                    onError={(e) => {
+                      console.error('Erro ao carregar imagem:', e);
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <p>Clique para adicionar QR Code</p>
+                )}
+              </ImagePreview>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleQrCodeChange}
+              />
+              <ImageUploadButton type="button" onClick={handleQrCodeClick}>
+                {qrCodePreview ? 'Alterar QR Code' : 'Adicionar QR Code'}
+              </ImageUploadButton>
+            </FormGroup>
+          </ConfigContainer>
+          
+          <ConfigContainer>
+            <ConfigTitle>Configurações do Mercado Pago</ConfigTitle>
+            
+            <FormGroup>
+              <Label htmlFor="mercadoPagoPublicKey">Public Key</Label>
+              <Input
+                type="text"
+                id="mercadoPagoPublicKey"
+                name="mercadoPagoPublicKey"
+                value={config.mercadoPagoPublicKey}
+                onChange={handleChange}
+                placeholder="APP_USR-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <Label htmlFor="mercadoPagoAccessToken">Access Token</Label>
+              <Input
+                type="text"
+                id="mercadoPagoAccessToken"
+                name="mercadoPagoAccessToken"
+                value={config.mercadoPagoAccessToken}
+                onChange={handleChange}
+                placeholder="APP_USR-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <Label htmlFor="mercadoPagoWebhookUrl">URL de Webhook</Label>
+              <Input
+                type="text"
+                id="mercadoPagoWebhookUrl"
+                name="mercadoPagoWebhookUrl"
+                value={config.mercadoPagoWebhookUrl}
+                onChange={handleChange}
+                placeholder="https://seu-site.com/api/mercadopago/webhook"
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <Label htmlFor="mercadoPagoNotificationUrl">URL de Notificação</Label>
+              <Input
+                type="text"
+                id="mercadoPagoNotificationUrl"
+                name="mercadoPagoNotificationUrl"
+                value={config.mercadoPagoNotificationUrl}
+                onChange={handleChange}
+                placeholder="https://seu-site.com/api/mercadopago/notification"
+              />
+            </FormGroup>
+          </ConfigContainer>
+          
+          <ConfigContainer>
+            <ConfigTitle>Imagens de Fundo</ConfigTitle>
+            
+            <p>Adicione imagens de fundo para serem exibidas no site. As imagens serão exibidas em rotação.</p>
+            
+            <DropZone
+              className={isDragging ? 'active' : ''}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={isDragging ? 'active' : ''}
+              onClick={handleBackgroundImageClick}
             >
-              <div className="icon">📷</div>
+              <div className="icon">📁</div>
               <p>Arraste imagens aqui ou clique para selecionar</p>
-              <p>Formatos aceitos: JPG, PNG, GIF, WebP (máx. 5MB)</p>
+              <p>Formatos aceitos: JPG, PNG, GIF, WebP</p>
             </DropZone>
-            
             <input
               type="file"
               ref={bgFileInputRef}
               style={{ display: 'none' }}
               accept="image/*"
-              onChange={handleBackgroundImageChange}
               multiple
+              onChange={handleBackgroundImageChange}
             />
             
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -643,24 +752,30 @@ const Config = () => {
                             active={image.active}
                           >
                             <img 
-                              src={`http://localhost:3001${image.path}`} 
+                              src={`${API_URL}${image.path}`} 
                               alt={`Imagem de fundo ${index + 1}`} 
+                              onError={(e) => {
+                                console.error('Erro ao carregar imagem:', e);
+                                e.target.style.display = 'none';
+                              }}
                             />
-                            <DragHandle {...provided.dragHandleProps} />
                             <ImageActions className="image-actions" active={image.active}>
-                              <button 
+                              <button
+                                type="button"
                                 className="toggle-btn"
                                 onClick={() => handleToggleBackgroundImage(image.id, image.active)}
                               >
                                 {image.active ? 'Desativar' : 'Ativar'}
                               </button>
-                              <button 
+                              <button
+                                type="button"
                                 className="delete-btn"
                                 onClick={() => handleDeleteBackgroundImage(image.id)}
                               >
                                 Excluir
                               </button>
                             </ImageActions>
+                            <DragHandle {...provided.dragHandleProps} />
                           </BackgroundImageItem>
                         )}
                       </Draggable>
@@ -670,118 +785,6 @@ const Config = () => {
                 )}
               </Droppable>
             </DragDropContext>
-          </ConfigContainer>
-          
-          <ConfigContainer>
-            <ConfigTitle>Configurações de PIX</ConfigTitle>
-            
-            <FormGroup>
-              <Label htmlFor="pixKey">Chave PIX</Label>
-              <Input
-                type="text"
-                id="pixKey"
-                name="pixKey"
-                value={config.pixKey}
-                onChange={handleChange}
-                placeholder="Ex: email@exemplo.com"
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <Label htmlFor="pixDescription">Descrição do PIX</Label>
-              <TextArea
-                id="pixDescription"
-                name="pixDescription"
-                value={config.pixDescription}
-                onChange={handleChange}
-                placeholder="Ex: Presente de casamento para Marília e Iago"
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <Label>QR Code PIX</Label>
-              <ImagePreview onClick={handleQrCodeClick}>
-                {qrCodePreview ? (
-                  <img 
-                    src={qrCodePreview.startsWith('data:') ? qrCodePreview : `http://localhost:3001${qrCodePreview}`}
-                    alt="QR Code PIX" 
-                    onError={() => {
-                      console.error('Erro ao carregar imagem');
-                      setError('Erro ao carregar imagem do QR Code.');
-                    }}
-                  />
-                ) : (
-                  <span>Clique para selecionar uma imagem</span>
-                )}
-              </ImagePreview>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                accept="image/*"
-                onChange={handleQrCodeChange}
-              />
-              <ImageUploadButton type="button" onClick={handleQrCodeClick}>
-                Selecionar QR Code
-              </ImageUploadButton>
-            </FormGroup>
-          </ConfigContainer>
-          
-          <ConfigContainer>
-            <ConfigTitle>Configurações do Mercado Pago</ConfigTitle>
-            <p>Configure as credenciais do Mercado Pago para habilitar a compra de presentes online.</p>
-            
-            <FormGroup>
-              <Label htmlFor="mercadoPagoPublicKey">Chave Pública (Public Key)</Label>
-              <Input
-                type="text"
-                id="mercadoPagoPublicKey"
-                name="mercadoPagoPublicKey"
-                value={config.mercadoPagoPublicKey}
-                onChange={handleChange}
-                placeholder="APP_USR-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              />
-              <small>Encontrada no painel do Mercado Pago em Credenciais</small>
-            </FormGroup>
-            
-            <FormGroup>
-              <Label htmlFor="mercadoPagoAccessToken">Access Token</Label>
-              <Input
-                type="text"
-                id="mercadoPagoAccessToken"
-                name="mercadoPagoAccessToken"
-                value={config.mercadoPagoAccessToken}
-                onChange={handleChange}
-                placeholder="APP_USR-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              />
-              <small>Encontrado no painel do Mercado Pago em Credenciais</small>
-            </FormGroup>
-            
-            <FormGroup>
-              <Label htmlFor="mercadoPagoWebhookUrl">URL de Webhook (opcional)</Label>
-              <Input
-                type="text"
-                id="mercadoPagoWebhookUrl"
-                name="mercadoPagoWebhookUrl"
-                value={config.mercadoPagoWebhookUrl}
-                onChange={handleChange}
-                placeholder="https://seu-site.com/api/webhooks/mercadopago"
-              />
-              <small>URL para receber notificações de pagamento via webhook</small>
-            </FormGroup>
-            
-            <FormGroup>
-              <Label htmlFor="mercadoPagoNotificationUrl">URL de Notificação (opcional)</Label>
-              <Input
-                type="text"
-                id="mercadoPagoNotificationUrl"
-                name="mercadoPagoNotificationUrl"
-                value={config.mercadoPagoNotificationUrl}
-                onChange={handleChange}
-                placeholder="https://seu-site.com/api/notifications/mercadopago"
-              />
-              <small>URL para redirecionamento após pagamento</small>
-            </FormGroup>
           </ConfigContainer>
           
           <SubmitButton type="submit" disabled={isLoading}>

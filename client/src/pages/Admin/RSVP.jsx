@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import {
   AdminContainer,
   Sidebar,
@@ -118,7 +119,7 @@ const RSVP = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3001/api/rsvp', {
+      const response = await axios.get(`${API_URL}/api/rsvp`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -175,7 +176,7 @@ const RSVP = () => {
   const handleExportCSV = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3001/api/rsvp/export', {
+      const response = await axios.get(`${API_URL}/api/rsvp/export`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -224,7 +225,7 @@ const RSVP = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3001/api/rsvp/${rsvpToDelete.id}`, {
+      await axios.delete(`${API_URL}/api/rsvp/${rsvpToDelete.id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

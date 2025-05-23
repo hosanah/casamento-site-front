@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -194,7 +195,7 @@ const ConfirmePresenca = () => {
     
     try {
       // Integração com o backend - URL base corrigida
-      await axios.post('http://localhost:3001/api/rsvp', {
+      await axios.post(`${API_URL}/api/rsvp`, {
         name: formData.name,
         companions: parseInt(formData.companions) || 0,
         email: formData.email,

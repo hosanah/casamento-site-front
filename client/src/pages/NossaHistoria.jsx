@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -201,7 +202,7 @@ const TimelineImageWithFallback = ({ src, alt }) => {
   
   return (
     <TimelineImage 
-      src={`http://localhost:3001${src}`}
+      src={`${API_URL}${src}`}
       alt={alt}
       onError={() => setHasError(true)}
     />
@@ -218,7 +219,7 @@ const NossaHistoria = () => {
       try {
         setIsLoading(true);
         
-        const response = await axios.get('http://localhost:3001/api/story-events');
+        const response = await axios.get(`${API_URL}/api/story-events`);
         
         // Ordenar eventos por ordem e depois por data
         const sortedEvents = response.data.sort((a, b) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -350,7 +351,7 @@ const ListaPresentes = () => {
   const fetchPresentes = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3001/api/presentes');
+      const response = await axios.get(`${API_URL}/api/presentes`);
       setGifts(response.data);
       setError('');
     } catch (error) {
@@ -363,7 +364,7 @@ const ListaPresentes = () => {
   
   const fetchPixInfo = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/config');
+      const response = await axios.get(`${API_URL}/api/config`);
       if (response.data) {
         setPixInfo({
           key: response.data.pixKey || 'exemplo.pix@casamento.com',
@@ -434,7 +435,7 @@ const ListaPresentes = () => {
       setCheckoutError('');
       
       // Criar preferência de pagamento no Mercado Pago
-      const response = await axios.post('http://localhost:3001/api/mercadopago/create-preference', {
+      const response = await axios.post(`${API_URL}/api/mercadopago/create-preference`, {
         presentId: selectedGift.id,
         customerName,
         customerEmail
@@ -464,7 +465,7 @@ const ListaPresentes = () => {
     
     return (
       <GiftImage 
-        src={src.startsWith('http') ? src : `http://localhost:3001${src}`}
+        src={src.startsWith('http') ? src : `${API_URL}${src}`}
         alt={alt}
         onError={() => {
           // Em vez de tentar carregar outra imagem, apenas marcamos que houve erro
@@ -485,7 +486,7 @@ const ListaPresentes = () => {
     return (
       <PixQRCode>
         <img 
-          src={src.startsWith('http') ? src : `http://localhost:3001${src}`} 
+          src={src.startsWith('http') ? src : `${API_URL}${src}`} 
           alt={alt || 'QR Code PIX'} 
           onError={() => setHasError(true)}
         />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -115,7 +116,7 @@ const ConfirmacaoPresente = () => {
       }
       
       try {
-        const response = await axios.get(`http://localhost:3001/api/mercadopago/order/${orderId}`);
+        const response = await axios.get(`${API_URL}/api/mercadopago/order/${orderId}`);
         setOrderDetails(response.data);
       } catch (error) {
         console.error('Erro ao buscar detalhes do pedido:', error);
