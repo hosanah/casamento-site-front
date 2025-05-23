@@ -11,19 +11,6 @@ COPY client/package*.json ./
 # Instalar dependências
 RUN npm ci
 
-# Estágio de desenvolvimento
-FROM base as development
-WORKDIR /app
-
-# Copiar todo o código fonte
-COPY client/ ./
-
-# Expor porta para desenvolvimento
-EXPOSE 5173
-
-# Comando para iniciar em modo desenvolvimento
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-
 # Estágio de build
 FROM base as build
 WORKDIR /app
@@ -37,8 +24,15 @@ RUN npm run build
 # Estágio de produção
 FROM nginx:alpine as production
 
-# Copiar configuração personalizada do nginx
+# Copiar arquivos estáticos da build para o Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
+
+# Verificar se os arquivos foram copiados corretamente
+RUN ls -la /usr/share/nginx/html && \
+    if [ ! -f /usr/share/nginx/html/index.html ]; then \
+      echo "ERRO: index.html não encontrado na pasta de build!" && \
+      exit 1; \
+    fi
 
 # Configuração do Nginx para SPA (Single Page Application)
 RUN echo 'server { \
