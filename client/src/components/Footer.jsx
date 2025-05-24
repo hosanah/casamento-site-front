@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import { useConfig } from '../contexts/ConfigContext';
 
 const FooterContainer = styled.footer`
   background-color: var(--accent);
@@ -70,11 +71,30 @@ const FloralDecoration = styled.div`
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const location = useLocation();
+  const { config } = useConfig();
   
   // Não mostrar o footer nas páginas de admin
   if (location.pathname.startsWith('/admin')) {
     return null;
   }
+
+  // Formatar a data do casamento para exibição
+  const formattedDate = React.useMemo(() => {
+    if (!config.weddingDate) return '20 de setembro de 2025, às 19:00';
+    
+    try {
+      const date = new Date(config.weddingDate);
+      const options = { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric'
+      };
+      return new Intl.DateTimeFormat('pt-BR', options).format(date);
+    } catch (err) {
+      console.error('Erro ao formatar data:', err);
+      return config.weddingDate;
+    }
+  }, [config.weddingDate]);
   
   return (
     <FooterContainer>
@@ -82,11 +102,11 @@ const Footer = () => {
       <FloralDecoration className="bottom-right" />
       <FooterContent>
         <Names>
-          Marília <span>&</span> Iago
+          <span>{config.siteTitle}</span>
         </Names>
-        <EventDate>20 de Setembro de 2025</EventDate>
+        <EventDate>{formattedDate}</EventDate>
         <Copyright>
-          © {currentYear} - Todos os direitos reservados
+          © Zapchatbr {currentYear} - Todos os direitos reservados
         </Copyright>
       </FooterContent>
     </FooterContainer>

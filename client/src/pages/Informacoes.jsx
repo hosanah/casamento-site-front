@@ -132,6 +132,7 @@ const Informacoes = () => {
               icon: '🏛️',
               title: 'Cerimônia',
               text: parsedContent.cerimonia || 'Informações em breve',
+              map: true
             },
             {
               icon: '🥂',
@@ -212,7 +213,7 @@ const Informacoes = () => {
               
               {section.map && (
                 <MapContainer>
-                  Mapa será exibido aqui
+                  
                 </MapContainer>
               )}
             </InfoCard>
