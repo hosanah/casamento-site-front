@@ -89,6 +89,27 @@ const MapContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: #666;
+  
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+`;
+
+const PhotoContainer = styled.div`
+  height: 300px;
+  margin-top: 30px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const LoadingContainer = styled.div`
@@ -111,6 +132,13 @@ const ErrorContainer = styled.div`
   max-width: 800px;
 `;
 
+// Função para gerar URL do Google Maps a partir de um endereço
+const getGoogleMapsEmbedUrl = (address) => {
+  if (!address) return '';
+  const encodedAddress = encodeURIComponent(address);
+  return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodedAddress}`;
+};
+
 const Informacoes = () => {
   const [infoSections, setInfoSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -132,27 +160,44 @@ const Informacoes = () => {
               icon: '🏛️',
               title: 'Cerimônia',
               text: parsedContent.cerimonia || 'Informações em breve',
-              map: true
+              map: true,
+              address: parsedContent.cerimonia_address || 'Av. Dantas Barreto, 677 – São José',
+              photo: parsedContent.cerimonia_photo || '',
+              showPhoto: !!parsedContent.cerimonia_photo
             },
             {
               icon: '🥂',
               title: 'Recepção',
               text: parsedContent.recepcao || 'Informações em breve',
+              map: true,
+              address: parsedContent.recepcao_address || 'Espaço Dom – R. das Oficinas, 15 – Pina ',
+              photo: parsedContent.recepcao_photo || '',
+              showPhoto: !!parsedContent.recepcao_photo
             },
             {
               icon: '👔',
               title: 'Dress Code',
               text: parsedContent.dressCode || 'Informações em breve',
+              photo: parsedContent.dressCode_photo || '',
+              showPhoto: !!parsedContent.dressCode_photo
             },
             {
               icon: '🏨',
               title: 'Hospedagem Sugerida',
               text: parsedContent.hospedagem || 'Informações em breve',
+              map: !!parsedContent.hospedagem_address,
+              address: parsedContent.hospedagem_address || '',
+              photo: parsedContent.hospedagem_photo || '',
+              showPhoto: !!parsedContent.hospedagem_photo
             },
             {
               icon: '🚗',
               title: 'Transporte',
               text: parsedContent.transporte || 'Informações em breve',
+              map: !!parsedContent.transporte_address,
+              address: parsedContent.transporte_address || '',
+              photo: parsedContent.transporte_photo || '',
+              showPhoto: !!parsedContent.transporte_photo
             }
           ]);
         } catch (e) {
@@ -211,9 +256,26 @@ const Informacoes = () => {
               <InfoTitle>{section.title}</InfoTitle>
               <InfoText>{section.text}</InfoText>
               
-              {section.map && (
+              {section.showPhoto && (
+                <PhotoContainer>
+                  <img 
+                    src={`/images/${section.photo}`} 
+                    alt={section.title} 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/placeholder.jpg';
+                    }}
+                  />
+                </PhotoContainer>
+              )}
+              
+              {section.map && section.address && (
                 <MapContainer>
-                  
+                  <iframe
+                    title={`Mapa - ${section.title}`}
+                    src={getGoogleMapsEmbedUrl(section.address)}
+                    allowFullScreen
+                  ></iframe>
                 </MapContainer>
               )}
             </InfoCard>
