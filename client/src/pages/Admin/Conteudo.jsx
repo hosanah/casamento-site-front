@@ -101,6 +101,32 @@ const InfoFieldTitle = styled.h3`
   margin: 0;
 `;
 
+const InfoFieldSection = styled.div`
+  margin-bottom: 1rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const InfoFieldLabel = styled.label`
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+`;
+
+const InfoFieldInput = styled(Input)`
+  width: 100%;
+  margin-bottom: 0.5rem;
+`;
+
+const InfoFieldHelp = styled.div`
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -179,15 +205,50 @@ const PreviewCardTitle = styled.h4`
   margin-bottom: 1rem;
 `;
 
+const PreviewCardImage = styled.div`
+  margin-top: 1rem;
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    max-height: 150px;
+    object-fit: cover;
+  }
+`;
+
+const PreviewCardMap = styled.div`
+  margin-top: 1rem;
+  border: 1px solid rgba(182, 149, 192, 0.3);
+  border-radius: 4px;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 0.9rem;
+`;
+
 const Conteudo = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [content, setContent] = useState('');
   const [infoFields, setInfoFields] = useState({
     cerimonia: '',
+    cerimonia_address: '',
+    cerimonia_photo: '',
+    
     recepcao: '',
+    recepcao_address: '',
+    recepcao_photo: '',
+    
     dressCode: '',
+    dressCode_photo: '',
+    
     hospedagem: '',
-    transporte: ''
+    hospedagem_address: '',
+    hospedagem_photo: '',
+    
+    transporte: '',
+    transporte_address: '',
+    transporte_photo: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState('');
@@ -210,10 +271,23 @@ const Conteudo = () => {
             const parsedContent = JSON.parse(response.data.content);
             setInfoFields({
               cerimonia: parsedContent.cerimonia || '',
+              cerimonia_address: parsedContent.cerimonia_address || '',
+              cerimonia_photo: parsedContent.cerimonia_photo || '',
+              
               recepcao: parsedContent.recepcao || '',
+              recepcao_address: parsedContent.recepcao_address || '',
+              recepcao_photo: parsedContent.recepcao_photo || '',
+              
               dressCode: parsedContent.dressCode || '',
+              dressCode_photo: parsedContent.dressCode_photo || '',
+              
               hospedagem: parsedContent.hospedagem || '',
-              transporte: parsedContent.transporte || ''
+              hospedagem_address: parsedContent.hospedagem_address || '',
+              hospedagem_photo: parsedContent.hospedagem_photo || '',
+              
+              transporte: parsedContent.transporte || '',
+              transporte_address: parsedContent.transporte_address || '',
+              transporte_photo: parsedContent.transporte_photo || ''
             });
           } catch (e) {
             // Se não for JSON, é o formato antigo (texto único)
@@ -235,10 +309,23 @@ const Conteudo = () => {
             
             setInfoFields({
               cerimonia: extractSection('📍 Cerimônia', 'Cerimônia'),
+              cerimonia_address: '',
+              cerimonia_photo: '',
+              
               recepcao: extractSection('📍 Recepção', 'Recepção'),
+              recepcao_address: '',
+              recepcao_photo: '',
+              
               dressCode: extractSection('👗 Dress Code', 'Dress Code'),
+              dressCode_photo: '',
+              
               hospedagem: extractSection('🏨 Hospedagem', 'Hospedagem'),
-              transporte: extractSection('🚖 Transporte', 'Transporte')
+              hospedagem_address: '',
+              hospedagem_photo: '',
+              
+              transporte: extractSection('🚖 Transporte', 'Transporte'),
+              transporte_address: '',
+              transporte_photo: ''
             });
           }
         } else {
@@ -248,10 +335,23 @@ const Conteudo = () => {
         if (section === 'informacoes') {
           setInfoFields({
             cerimonia: '',
+            cerimonia_address: '',
+            cerimonia_photo: '',
+            
             recepcao: '',
+            recepcao_address: '',
+            recepcao_photo: '',
+            
             dressCode: '',
+            dressCode_photo: '',
+            
             hospedagem: '',
-            transporte: ''
+            hospedagem_address: '',
+            hospedagem_photo: '',
+            
+            transporte: '',
+            transporte_address: '',
+            transporte_photo: ''
           });
         } else {
           setContent('');
@@ -333,26 +433,119 @@ const Conteudo = () => {
             <PreviewCardIcon>🏛️</PreviewCardIcon>
             <PreviewCardTitle>Cerimônia</PreviewCardTitle>
             <p>{infoFields.cerimonia}</p>
+            
+            {infoFields.cerimonia_photo && (
+              <PreviewCardImage>
+                <img 
+                  src={`/images/${infoFields.cerimonia_photo}`} 
+                  alt="Cerimônia" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                />
+              </PreviewCardImage>
+            )}
+            
+            {infoFields.cerimonia_address && (
+              <PreviewCardMap>
+                <strong>Endereço:</strong> {infoFields.cerimonia_address}
+              </PreviewCardMap>
+            )}
           </PreviewCard>
+          
           <PreviewCard>
             <PreviewCardIcon>🥂</PreviewCardIcon>
             <PreviewCardTitle>Recepção</PreviewCardTitle>
             <p>{infoFields.recepcao}</p>
+            
+            {infoFields.recepcao_photo && (
+              <PreviewCardImage>
+                <img 
+                  src={`/images/${infoFields.recepcao_photo}`} 
+                  alt="Recepção" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                />
+              </PreviewCardImage>
+            )}
+            
+            {infoFields.recepcao_address && (
+              <PreviewCardMap>
+                <strong>Endereço:</strong> {infoFields.recepcao_address}
+              </PreviewCardMap>
+            )}
           </PreviewCard>
+          
           <PreviewCard>
             <PreviewCardIcon>👔</PreviewCardIcon>
             <PreviewCardTitle>Dress Code</PreviewCardTitle>
             <p>{infoFields.dressCode}</p>
+            
+            {infoFields.dressCode_photo && (
+              <PreviewCardImage>
+                <img 
+                  src={`/images/${infoFields.dressCode_photo}`} 
+                  alt="Dress Code" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                />
+              </PreviewCardImage>
+            )}
           </PreviewCard>
+          
           <PreviewCard>
             <PreviewCardIcon>🏨</PreviewCardIcon>
             <PreviewCardTitle>Hospedagem Sugerida</PreviewCardTitle>
             <p>{infoFields.hospedagem}</p>
+            
+            {infoFields.hospedagem_photo && (
+              <PreviewCardImage>
+                <img 
+                  src={`/images/${infoFields.hospedagem_photo}`} 
+                  alt="Hospedagem" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                />
+              </PreviewCardImage>
+            )}
+            
+            {infoFields.hospedagem_address && (
+              <PreviewCardMap>
+                <strong>Endereço:</strong> {infoFields.hospedagem_address}
+              </PreviewCardMap>
+            )}
           </PreviewCard>
+          
           <PreviewCard>
             <PreviewCardIcon>🚗</PreviewCardIcon>
             <PreviewCardTitle>Transporte</PreviewCardTitle>
             <p>{infoFields.transporte}</p>
+            
+            {infoFields.transporte_photo && (
+              <PreviewCardImage>
+                <img 
+                  src={`/images/${infoFields.transporte_photo}`} 
+                  alt="Transporte" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                />
+              </PreviewCardImage>
+            )}
+            
+            {infoFields.transporte_address && (
+              <PreviewCardMap>
+                <strong>Endereço:</strong> {infoFields.transporte_address}
+              </PreviewCardMap>
+            )}
           </PreviewCard>
         </PreviewGrid>
       );
@@ -378,11 +571,37 @@ const Conteudo = () => {
               <InfoFieldIcon>🏛️</InfoFieldIcon>
               <InfoFieldTitle>Cerimônia</InfoFieldTitle>
             </InfoFieldHeader>
-            <TextArea
-              value={infoFields.cerimonia}
-              onChange={(e) => handleInfoFieldChange('cerimonia', e.target.value)}
-              placeholder="Informe os detalhes da cerimônia..."
-            />
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Descrição</InfoFieldLabel>
+              <TextArea
+                value={infoFields.cerimonia}
+                onChange={(e) => handleInfoFieldChange('cerimonia', e.target.value)}
+                placeholder="Informe os detalhes da cerimônia..."
+              />
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Endereço para o Google Maps</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.cerimonia_address}
+                onChange={(e) => handleInfoFieldChange('cerimonia_address', e.target.value)}
+                placeholder="Ex: Av. Paulista, 1000, São Paulo, SP"
+              />
+              <InfoFieldHelp>Informe o endereço completo para exibição no Google Maps</InfoFieldHelp>
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Foto</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.cerimonia_photo}
+                onChange={(e) => handleInfoFieldChange('cerimonia_photo', e.target.value)}
+                placeholder="Ex: cerimonia.jpg"
+              />
+              <InfoFieldHelp>Informe apenas o nome do arquivo. A imagem deve estar na pasta public/images</InfoFieldHelp>
+            </InfoFieldSection>
           </InfoField>
           
           <InfoField>
@@ -390,11 +609,37 @@ const Conteudo = () => {
               <InfoFieldIcon>🥂</InfoFieldIcon>
               <InfoFieldTitle>Recepção</InfoFieldTitle>
             </InfoFieldHeader>
-            <TextArea
-              value={infoFields.recepcao}
-              onChange={(e) => handleInfoFieldChange('recepcao', e.target.value)}
-              placeholder="Informe os detalhes da recepção..."
-            />
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Descrição</InfoFieldLabel>
+              <TextArea
+                value={infoFields.recepcao}
+                onChange={(e) => handleInfoFieldChange('recepcao', e.target.value)}
+                placeholder="Informe os detalhes da recepção..."
+              />
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Endereço para o Google Maps</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.recepcao_address}
+                onChange={(e) => handleInfoFieldChange('recepcao_address', e.target.value)}
+                placeholder="Ex: Av. Paulista, 1000, São Paulo, SP"
+              />
+              <InfoFieldHelp>Informe o endereço completo para exibição no Google Maps</InfoFieldHelp>
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Foto</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.recepcao_photo}
+                onChange={(e) => handleInfoFieldChange('recepcao_photo', e.target.value)}
+                placeholder="Ex: recepcao.jpg"
+              />
+              <InfoFieldHelp>Informe apenas o nome do arquivo. A imagem deve estar na pasta public/images</InfoFieldHelp>
+            </InfoFieldSection>
           </InfoField>
           
           <InfoField>
@@ -402,11 +647,26 @@ const Conteudo = () => {
               <InfoFieldIcon>👔</InfoFieldIcon>
               <InfoFieldTitle>Dress Code</InfoFieldTitle>
             </InfoFieldHeader>
-            <TextArea
-              value={infoFields.dressCode}
-              onChange={(e) => handleInfoFieldChange('dressCode', e.target.value)}
-              placeholder="Informe o dress code..."
-            />
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Descrição</InfoFieldLabel>
+              <TextArea
+                value={infoFields.dressCode}
+                onChange={(e) => handleInfoFieldChange('dressCode', e.target.value)}
+                placeholder="Informe o dress code..."
+              />
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Foto</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.dressCode_photo}
+                onChange={(e) => handleInfoFieldChange('dressCode_photo', e.target.value)}
+                placeholder="Ex: dresscode.jpg"
+              />
+              <InfoFieldHelp>Informe apenas o nome do arquivo. A imagem deve estar na pasta public/images</InfoFieldHelp>
+            </InfoFieldSection>
           </InfoField>
           
           <InfoField>
@@ -414,11 +674,37 @@ const Conteudo = () => {
               <InfoFieldIcon>🏨</InfoFieldIcon>
               <InfoFieldTitle>Hospedagem Sugerida</InfoFieldTitle>
             </InfoFieldHeader>
-            <TextArea
-              value={infoFields.hospedagem}
-              onChange={(e) => handleInfoFieldChange('hospedagem', e.target.value)}
-              placeholder="Informe as opções de hospedagem..."
-            />
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Descrição</InfoFieldLabel>
+              <TextArea
+                value={infoFields.hospedagem}
+                onChange={(e) => handleInfoFieldChange('hospedagem', e.target.value)}
+                placeholder="Informe as opções de hospedagem..."
+              />
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Endereço para o Google Maps</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.hospedagem_address}
+                onChange={(e) => handleInfoFieldChange('hospedagem_address', e.target.value)}
+                placeholder="Ex: Av. Paulista, 1000, São Paulo, SP"
+              />
+              <InfoFieldHelp>Informe o endereço completo para exibição no Google Maps</InfoFieldHelp>
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Foto</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.hospedagem_photo}
+                onChange={(e) => handleInfoFieldChange('hospedagem_photo', e.target.value)}
+                placeholder="Ex: hospedagem.jpg"
+              />
+              <InfoFieldHelp>Informe apenas o nome do arquivo. A imagem deve estar na pasta public/images</InfoFieldHelp>
+            </InfoFieldSection>
           </InfoField>
           
           <InfoField>
@@ -426,11 +712,37 @@ const Conteudo = () => {
               <InfoFieldIcon>🚗</InfoFieldIcon>
               <InfoFieldTitle>Transporte</InfoFieldTitle>
             </InfoFieldHeader>
-            <TextArea
-              value={infoFields.transporte}
-              onChange={(e) => handleInfoFieldChange('transporte', e.target.value)}
-              placeholder="Informe as opções de transporte..."
-            />
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Descrição</InfoFieldLabel>
+              <TextArea
+                value={infoFields.transporte}
+                onChange={(e) => handleInfoFieldChange('transporte', e.target.value)}
+                placeholder="Informe as opções de transporte..."
+              />
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Endereço para o Google Maps</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.transporte_address}
+                onChange={(e) => handleInfoFieldChange('transporte_address', e.target.value)}
+                placeholder="Ex: Av. Paulista, 1000, São Paulo, SP"
+              />
+              <InfoFieldHelp>Informe o endereço completo para exibição no Google Maps</InfoFieldHelp>
+            </InfoFieldSection>
+            
+            <InfoFieldSection>
+              <InfoFieldLabel>Foto</InfoFieldLabel>
+              <InfoFieldInput
+                type="text"
+                value={infoFields.transporte_photo}
+                onChange={(e) => handleInfoFieldChange('transporte_photo', e.target.value)}
+                placeholder="Ex: transporte.jpg"
+              />
+              <InfoFieldHelp>Informe apenas o nome do arquivo. A imagem deve estar na pasta public/images</InfoFieldHelp>
+            </InfoFieldSection>
           </InfoField>
         </InfoFieldsContainer>
       );
