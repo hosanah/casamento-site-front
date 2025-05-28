@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import API_URL from '../config/api';
+import { useCart } from '../contexts/CartContext';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -90,11 +91,24 @@ const GiftCard = styled.div`
   overflow: hidden;
   box-shadow: var(--shadow-md);
   transition: var(--transition);
+  position: relative;
   
   &:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
   }
+`;
+
+const InCartBadge = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--primary);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  z-index: 2;
 `;
 
 const GiftImage = styled.img`
@@ -134,7 +148,7 @@ const GiftPrice = styled.div`
 const GiftButton = styled.button`
   width: 100%;
   text-align: center;
-  background-color: var(--primary);
+  background-color: ${props => props.inCart ? 'var(--accent)' : 'var(--primary)'};
   color: var(--white);
   border: none;
   padding: 12px 20px;
@@ -144,7 +158,7 @@ const GiftButton = styled.button`
   transition: var(--transition);
   
   &:hover {
-    background-color: var(--accent);
+    background-color: ${props => props.inCart ? '#a06db0' : 'var(--accent)'};
   }
   
   &:disabled {
@@ -258,6 +272,8 @@ const ModalContent = styled.div`
   width: 90%;
   max-width: 500px;
   box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
   
   h3 {
     margin-bottom: 20px;
@@ -328,7 +344,147 @@ const ButtonGroup = styled.div`
   }
 `;
 
+// Componentes para o carrinho
+const CartButton = styled.button`
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+  transition: var(--transition);
+  
+  &:hover {
+    background-color: var(--accent);
+    transform: scale(1.05);
+  }
+  
+  @media (max-width: 768px) {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+`;
+
+const CartCount = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--accent);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+`;
+
+const CartIcon = styled.div`
+  font-size: 1.5rem;
+`;
+
+const CartItemList = styled.div`
+  margin: 20px 0;
+  max-height: 300px;
+  overflow-y: auto;
+`;
+
+const CartItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const CartItemImage = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 15px;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+const CartItemInfo = styled.div`
+  flex: 1;
+`;
+
+const CartItemName = styled.div`
+  font-weight: 500;
+  margin-bottom: 5px;
+`;
+
+const CartItemPrice = styled.div`
+  color: var(--accent);
+  font-size: 0.9rem;
+`;
+
+const CartItemRemove = styled.button`
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 5px;
+  
+  &:hover {
+    color: var(--error);
+  }
+`;
+
+const CartSummary = styled.div`
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+`;
+
+const CartTotal = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+`;
+
+const EmptyCartMessage = styled.div`
+  text-align: center;
+  padding: 30px;
+  color: #999;
+`;
+
 const ListaPresentes = () => {
+  // Usar o hook do carrinho com fallback seguro
+  const { 
+    cartItems = [], 
+    addToCart = () => {}, 
+    removeFromCart = () => {}, 
+    clearCart = () => {}, 
+    getCartTotal = () => 0, 
+    getCartCount = () => 0 
+  } = useCart() || {};
+  
   const [activeTab, setActiveTab] = useState('online');
   const [gifts, setGifts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -341,6 +497,7 @@ const ListaPresentes = () => {
   
   // Estados para o modal de checkout
   const [showModal, setShowModal] = useState(false);
+  const [showCartModal, setShowCartModal] = useState(false);
   const [selectedGift, setSelectedGift] = useState(null);
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -411,9 +568,25 @@ const ListaPresentes = () => {
     setCheckoutError('');
   };
   
+  const handleAddToCart = (gift) => {
+    addToCart(gift);
+  };
+  
   const closeModal = () => {
     setShowModal(false);
     setSelectedGift(null);
+    setCustomerName('');
+    setCustomerEmail('');
+    setCheckoutError('');
+  };
+  
+  const openCartModal = () => {
+    setShowCartModal(true);
+    setCheckoutError('');
+  };
+  
+  const closeCartModal = () => {
+    setShowCartModal(false);
     setCustomerName('');
     setCustomerEmail('');
     setCheckoutError('');
@@ -434,7 +607,7 @@ const ListaPresentes = () => {
       setProcessingPayment(true);
       setCheckoutError('');
       
-      // Criar preferência de pagamento no Mercado Pago
+      // Criar preferência de pagamento no Mercado Pago para um único presente
       const response = await axios.post(`${API_URL}/api/mercadopago/create-preference`, {
         presentId: selectedGift.id,
         customerName,
@@ -449,6 +622,45 @@ const ListaPresentes = () => {
       }
     } catch (error) {
       console.error('Erro ao processar pagamento:', error);
+      setCheckoutError('Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.');
+      setProcessingPayment(false);
+    }
+  };
+  
+  const handleCartCheckout = async () => {
+    if (!customerName) {
+      setCheckoutError('Por favor, informe seu nome.');
+      return;
+    }
+    
+    if (customerEmail && !/\S+@\S+\.\S+/.test(customerEmail)) {
+      setCheckoutError('Por favor, informe um e-mail válido.');
+      return;
+    }
+    
+    try {
+      setProcessingPayment(true);
+      setCheckoutError('');
+      
+      // Criar preferência de pagamento no Mercado Pago para múltiplos presentes
+      const response = await axios.post(`${API_URL}/api/mercadopago/create-cart-preference`, {
+        items: cartItems.map(item => ({
+          presentId: item.id,
+          quantity: item.quantity
+        })),
+        customerName,
+        customerEmail
+      });
+      
+      // Redirecionar para a página de checkout do Mercado Pago
+      if (response.data && response.data.init_point) {
+        clearCart(); // Limpar o carrinho após iniciar o checkout
+        window.location.href = response.data.init_point;
+      } else {
+        throw new Error('Não foi possível iniciar o checkout.');
+      }
+    } catch (error) {
+      console.error('Erro ao processar pagamento do carrinho:', error);
       setCheckoutError('Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.');
       setProcessingPayment(false);
     }
@@ -494,59 +706,27 @@ const ListaPresentes = () => {
     );
   };
   
-  const renderContent = () => {
-    if (loading) {
-      return <LoadingContainer>Carregando presentes...</LoadingContainer>;
-    }
-    
-    if (error) {
-      return <ErrorContainer>{error}</ErrorContainer>;
-    }
-    
-    if (activeTab === 'pix') {
-      return (
-        <PixContainer>
-          <h3>Contribua com o valor que desejar</h3>
-          <p>Você pode nos ajudar com qualquer valor através do PIX abaixo:</p>
-          
-          <QRCodeWithFallback src={pixInfo.qrCodeImage} alt="QR Code PIX" />
-          
-          <p>Ou copie a chave PIX:</p>
-          <PixKey>{pixInfo.key}</PixKey>
-          
-          <p>{pixInfo.description}</p>
-          
-          <p>Agradecemos muito pela sua contribuição!</p>
-        </PixContainer>
-      );
-    }
-    
-    const filteredGifts = gifts.filter(gift => gift.stock > 0);
-    
-    if (filteredGifts.length === 0) {
-      return <ErrorContainer>Nenhum presente disponível no momento.</ErrorContainer>;
-    }
-    
+  if (loading) {
     return (
-      <GiftGrid>
-        {filteredGifts.map(gift => (
-          <GiftCard key={gift.id}>
-            <GiftImageWithFallback 
-              src={gift.image || ''} 
-              alt={gift.name}
-            />
-            <GiftInfo>
-              <GiftName>{gift.name}</GiftName>
-              <GiftPrice>{formatPrice(gift.price)}</GiftPrice>
-              <GiftButton onClick={() => handlePresentear(gift)}>
-                Presentear
-              </GiftButton>
-            </GiftInfo>
-          </GiftCard>
-        ))}
-      </GiftGrid>
+      <PageContainer>
+        <PageContent>
+          <SectionTitle>Lista de Presentes</SectionTitle>
+          <LoadingContainer>Carregando presentes...</LoadingContainer>
+        </PageContent>
+      </PageContainer>
     );
-  };
+  }
+  
+  if (error) {
+    return (
+      <PageContainer>
+        <PageContent>
+          <SectionTitle>Lista de Presentes</SectionTitle>
+          <ErrorContainer>{error}</ErrorContainer>
+        </PageContent>
+      </PageContainer>
+    );
+  }
   
   return (
     <PageContainer>
@@ -568,8 +748,71 @@ const ListaPresentes = () => {
           </GiftTab>
         </GiftTabs>
         
-        {renderContent()}
+        {activeTab === 'online' ? (
+          <>
+            <GiftGrid>
+              {gifts.filter(gift => gift.stock > 0).map(gift => {
+                const isInCart = cartItems.some(item => item.id === gift.id);
+                
+                return (
+                  <GiftCard key={gift.id}>
+                    {isInCart && <InCartBadge>No Carrinho</InCartBadge>}
+                    <GiftImageWithFallback 
+                      src={gift.image || ''} 
+                      alt={gift.name}
+                    />
+                    <GiftInfo>
+                      <GiftName>{gift.name}</GiftName>
+                      <GiftPrice>{formatPrice(gift.price)}</GiftPrice>
+                      {gift.stock > 0 ? (
+                        isInCart ? (
+                          <GiftButton 
+                            onClick={() => removeFromCart(gift.id)}
+                            inCart
+                          >
+                            Remover do Carrinho
+                          </GiftButton>
+                        ) : (
+                          <GiftButton onClick={() => handleAddToCart(gift)}>
+                            Adicionar ao Carrinho
+                          </GiftButton>
+                        )
+                      ) : (
+                        <GiftButton disabled>
+                          Esgotado
+                        </GiftButton>
+                      )}
+                    </GiftInfo>
+                  </GiftCard>
+                );
+              })}
+            </GiftGrid>
+            
+            {/* Botão flutuante do carrinho */}
+            {getCartCount() > 0 && (
+              <CartButton onClick={openCartModal}>
+                <CartIcon>🛒</CartIcon>
+                <CartCount>{getCartCount()}</CartCount>
+              </CartButton>
+            )}
+          </>
+        ) : (
+          <PixContainer>
+            <h3>Contribua com o valor que desejar</h3>
+            <p>Você pode nos ajudar com qualquer valor através do PIX abaixo:</p>
+            
+            <QRCodeWithFallback src={pixInfo.qrCodeImage} alt="QR Code PIX" />
+            
+            <p>Ou copie a chave PIX:</p>
+            <PixKey>{pixInfo.key}</PixKey>
+            
+            <p>{pixInfo.description}</p>
+            
+            <p>Agradecemos muito pela sua contribuição!</p>
+          </PixContainer>
+        )}
         
+        {/* Modal de checkout para um único presente */}
         {showModal && selectedGift && (
           <Modal>
             <ModalContent>
@@ -613,6 +856,86 @@ const ListaPresentes = () => {
                   {processingPayment ? 'Processando...' : 'Pagar com Mercado Pago'}
                 </button>
               </ButtonGroup>
+            </ModalContent>
+          </Modal>
+        )}
+        
+        {/* Modal do carrinho */}
+        {showCartModal && (
+          <Modal>
+            <ModalContent>
+              <h3>Seu Carrinho</h3>
+              
+              {cartItems.length > 0 ? (
+                <>
+                  <CartItemList>
+                    {cartItems.map((item) => (
+                      <CartItem key={item.id}>
+                        <CartItemImage>
+                          <GiftImageWithFallback 
+                            src={item.image || ''} 
+                            alt={item.name}
+                          />
+                        </CartItemImage>
+                        <CartItemInfo>
+                          <CartItemName>{item.name}</CartItemName>
+                          <CartItemPrice>{formatPrice(item.price)}</CartItemPrice>
+                        </CartItemInfo>
+                        <CartItemRemove onClick={() => removeFromCart(item.id)}>
+                          ×
+                        </CartItemRemove>
+                      </CartItem>
+                    ))}
+                  </CartItemList>
+                  
+                  <CartSummary>
+                    <CartTotal>
+                      <span>Total:</span>
+                      <span>{formatPrice(getCartTotal())}</span>
+                    </CartTotal>
+                    
+                    <FormGroup>
+                      <label htmlFor="cartCustomerName">Seu Nome</label>
+                      <input 
+                        type="text" 
+                        id="cartCustomerName" 
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        placeholder="Digite seu nome completo"
+                      />
+                    </FormGroup>
+                    
+                    <FormGroup>
+                      <label htmlFor="cartCustomerEmail">Seu E-mail (opcional)</label>
+                      <input 
+                        type="email" 
+                        id="cartCustomerEmail" 
+                        value={customerEmail}
+                        onChange={(e) => setCustomerEmail(e.target.value)}
+                        placeholder="Digite seu e-mail"
+                      />
+                    </FormGroup>
+                    
+                    {checkoutError && (
+                      <ErrorContainer>{checkoutError}</ErrorContainer>
+                    )}
+                  </CartSummary>
+                  
+                  <ButtonGroup>
+                    <button onClick={closeCartModal}>Continuar Comprando</button>
+                    <button 
+                      onClick={handleCartCheckout}
+                      disabled={processingPayment}
+                    >
+                      {processingPayment ? 'Processando...' : 'Finalizar Compra'}
+                    </button>
+                  </ButtonGroup>
+                </>
+              ) : (
+                <EmptyCartMessage>
+                  Seu carrinho está vazio.
+                </EmptyCartMessage>
+              )}
             </ModalContent>
           </Modal>
         )}

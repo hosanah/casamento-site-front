@@ -157,8 +157,104 @@ const StatusBadge = styled.span`
   }
 `;
 
+const CartBadge = styled.span`
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  background-color: #e0f7fa;
+  color: #0288d1;
+  margin-left: 8px;
+`;
+
+const GroupHeader = styled.tr`
+  background-color: #f8f9fa;
+  
+  td {
+    padding: 12px 15px;
+    font-weight: 500;
+    color: var(--primary);
+    border-bottom: 2px solid #eaeaea;
+  }
+`;
+
+const GroupRow = styled.tr`
+  background-color: ${props => props.isGrouped ? '#fafafa' : 'transparent'};
+  
+  &:hover {
+    background-color: ${props => props.isGrouped ? '#f5f5f5' : '#f9f9f9'};
+  }
+`;
+
+const ExpandButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 5px;
+  
+  &:hover {
+    color: var(--accent);
+  }
+`;
+
+const DetailRow = styled.tr`
+  background-color: #f8f9fa;
+  
+  td {
+    padding: 15px;
+    border-bottom: 1px solid #eaeaea;
+  }
+`;
+
+const DetailTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  th {
+    font-weight: 500;
+    color: var(--accent);
+    background-color: #f0f0f0;
+  }
+`;
+
+const ViewModeToggle = styled.div`
+  display: flex;
+  margin-bottom: 20px;
+  
+  button {
+    padding: 8px 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+    
+    &.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  }
+`;
+
 const AdminVendas = () => {
   const [sales, setSales] = useState([]);
+  const [groupedSales, setGroupedSales] = useState([]);
   const [stats, setStats] = useState({
     totalSales: 0,
     totalAmount: 0,
@@ -171,6 +267,8 @@ const AdminVendas = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [viewMode, setViewMode] = useState('grouped'); // 'grouped' ou 'individual'
+  const [expandedGroups, setExpandedGroups] = useState({});
   const { config } = useConfig();
   
   const handleLogout = () => {
@@ -194,6 +292,48 @@ const AdminVendas = () => {
       ]);
       
       setSales(salesResponse.data);
+      
+      // Agrupar vendas por paymentId (compras do mesmo carrinho)
+      const grouped = {};
+      salesResponse.data.forEach(sale => {
+        if (sale.paymentId) {
+          if (!grouped[sale.paymentId]) {
+            grouped[sale.paymentId] = {
+              paymentId: sale.paymentId,
+              customerName: sale.customerName,
+              customerEmail: sale.customerEmail,
+              paymentMethod: sale.paymentMethod,
+              status: sale.status,
+              createdAt: sale.createdAt,
+              items: [],
+              totalAmount: 0
+            };
+          }
+          grouped[sale.paymentId].items.push(sale);
+          grouped[sale.paymentId].totalAmount += sale.amount;
+        } else {
+          // Para vendas sem paymentId, criar um grupo único
+          const uniqueId = `single-${sale.id}`;
+          grouped[uniqueId] = {
+            paymentId: uniqueId,
+            customerName: sale.customerName,
+            customerEmail: sale.customerEmail,
+            paymentMethod: sale.paymentMethod,
+            status: sale.status,
+            createdAt: sale.createdAt,
+            items: [sale],
+            totalAmount: sale.amount,
+            isSingle: true
+          };
+        }
+      });
+      
+      // Converter o objeto agrupado em array e ordenar por data
+      const groupedArray = Object.values(grouped).sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      
+      setGroupedSales(groupedArray);
       setStats(statsResponse.data);
       setError('');
     } catch (error) {
@@ -250,7 +390,14 @@ const AdminVendas = () => {
     }
   };
   
-  // Filtrar vendas
+  const toggleExpand = (paymentId) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [paymentId]: !prev[paymentId]
+    }));
+  };
+  
+  // Filtrar vendas individuais
   const filteredSales = sales.filter(sale => {
     const matchesSearch = 
       sale.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -262,19 +409,39 @@ const AdminVendas = () => {
     return matchesSearch && matchesStatus;
   });
   
-  // Paginação
+  // Filtrar vendas agrupadas
+  const filteredGroupedSales = groupedSales.filter(group => {
+    const matchesSearch = 
+      group.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (group.customerEmail && group.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      group.items.some(item => 
+        item.present && item.present.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    
+    const matchesStatus = statusFilter === 'all' || group.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
+  
+  // Paginação para modo individual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredSales.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredSales.length / itemsPerPage);
   
+  // Paginação para modo agrupado
+  const currentGroupedItems = filteredGroupedSales.slice(indexOfFirstItem, indexOfLastItem);
+  const totalGroupedPages = Math.ceil(filteredGroupedSales.length / itemsPerPage);
+  
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
   const renderPagination = () => {
-    if (totalPages <= 1) return null;
+    const pages = viewMode === 'grouped' ? totalGroupedPages : totalPages;
+    
+    if (pages <= 1) return null;
     
     const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= pages; i++) {
       pageNumbers.push(i);
     }
     
@@ -299,12 +466,126 @@ const AdminVendas = () => {
         
         <button 
           onClick={() => paginate(currentPage + 1)} 
-          disabled={currentPage === totalPages}
+          disabled={currentPage === pages}
         >
           &raquo;
         </button>
       </Pagination>
     );
+  };
+  
+  const renderIndividualSales = () => {
+    if (currentItems.length === 0) {
+      return (
+        <Tr>
+          <Td colSpan="6">
+            <NoDataContainer>
+              Nenhuma venda encontrada com os filtros atuais.
+            </NoDataContainer>
+          </Td>
+        </Tr>
+      );
+    }
+    
+    return currentItems.map((sale) => (
+      <Tr key={sale.id}>
+        <Td>{formatDate(sale.createdAt)}</Td>
+        <Td>
+          {sale.customerName}
+          {sale.customerEmail && <div><small>{sale.customerEmail}</small></div>}
+        </Td>
+        <Td>{sale.present ? sale.present.name : 'Produto não encontrado'}</Td>
+        <Td>{formatCurrency(sale.amount)}</Td>
+        <Td>{getPaymentMethodLabel(sale.paymentMethod)}</Td>
+        <Td>
+          <StatusBadge className={sale.status}>
+            {getStatusLabel(sale.status)}
+          </StatusBadge>
+        </Td>
+      </Tr>
+    ));
+  };
+  
+  const renderGroupedSales = () => {
+    if (currentGroupedItems.length === 0) {
+      return (
+        <Tr>
+          <Td colSpan="6">
+            <NoDataContainer>
+              Nenhuma venda encontrada com os filtros atuais.
+            </NoDataContainer>
+          </Td>
+        </Tr>
+      );
+    }
+    
+    return currentGroupedItems.map((group) => {
+      const isExpanded = expandedGroups[group.paymentId] || false;
+      const isMultipleItems = group.items.length > 1;
+      
+      return (
+        <React.Fragment key={group.paymentId}>
+          <GroupRow isGrouped={isMultipleItems}>
+            <Td>
+              {isMultipleItems && (
+                <ExpandButton onClick={() => toggleExpand(group.paymentId)}>
+                  {isExpanded ? '−' : '+'}
+                </ExpandButton>
+              )}
+              {formatDate(group.createdAt)}
+            </Td>
+            <Td>
+              {group.customerName}
+              {group.customerEmail && <div><small>{group.customerEmail}</small></div>}
+            </Td>
+            <Td>
+              {isMultipleItems ? (
+                <>
+                  Compra múltipla
+                  <CartBadge>{group.items.length} itens</CartBadge>
+                </>
+              ) : (
+                group.items[0].present ? group.items[0].present.name : 'Produto não encontrado'
+              )}
+            </Td>
+            <Td>{formatCurrency(group.totalAmount)}</Td>
+            <Td>{getPaymentMethodLabel(group.paymentMethod)}</Td>
+            <Td>
+              <StatusBadge className={group.status}>
+                {getStatusLabel(group.status)}
+              </StatusBadge>
+            </Td>
+          </GroupRow>
+          
+          {isExpanded && isMultipleItems && (
+            <DetailRow>
+              <Td colSpan="6">
+                <DetailTable>
+                  <thead>
+                    <tr>
+                      <th>Presente</th>
+                      <th>Quantidade</th>
+                      <th>Valor Unitário</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {group.items.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.present ? item.present.name : 'Produto não encontrado'}</td>
+                        <td>{item.quantity || 1}</td>
+                        <td>{formatCurrency(item.amount / (item.quantity || 1))}</td>
+                        <td>{formatCurrency(item.amount)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </DetailTable>
+              </Td>
+            </DetailRow>
+          )}
+        </React.Fragment>
+      );
+    });
   };
   
   if (loading) {
@@ -465,6 +746,21 @@ const AdminVendas = () => {
           ))}
         </StatsContainer>
         
+        <ViewModeToggle>
+          <button 
+            className={viewMode === 'grouped' ? 'active' : ''}
+            onClick={() => setViewMode('grouped')}
+          >
+            Agrupar por Compra
+          </button>
+          <button 
+            className={viewMode === 'individual' ? 'active' : ''}
+            onClick={() => setViewMode('individual')}
+          >
+            Itens Individuais
+          </button>
+        </ViewModeToggle>
+        
         <FilterContainer>
           <SearchInput 
             type="text" 
@@ -497,33 +793,7 @@ const AdminVendas = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.length > 0 ? (
-                currentItems.map((sale) => (
-                  <Tr key={sale.id}>
-                    <Td>{formatDate(sale.createdAt)}</Td>
-                    <Td>
-                      {sale.customerName}
-                      {sale.customerEmail && <div><small>{sale.customerEmail}</small></div>}
-                    </Td>
-                    <Td>{sale.present ? sale.present.name : 'Produto não encontrado'}</Td>
-                    <Td>{formatCurrency(sale.amount)}</Td>
-                    <Td>{getPaymentMethodLabel(sale.paymentMethod)}</Td>
-                    <Td>
-                      <StatusBadge className={sale.status}>
-                        {getStatusLabel(sale.status)}
-                      </StatusBadge>
-                    </Td>
-                  </Tr>
-                ))
-              ) : (
-                <Tr>
-                  <Td colSpan="6">
-                    <NoDataContainer>
-                      Nenhuma venda encontrada com os filtros atuais.
-                    </NoDataContainer>
-                  </Td>
-                </Tr>
-              )}
+              {viewMode === 'grouped' ? renderGroupedSales() : renderIndividualSales()}
             </tbody>
           </Table>
         </TableContainer>

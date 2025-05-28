@@ -5,12 +5,15 @@ import App from './App';
 import './index.css';
 import './styles/GlobalStyles.css';
 import { ConfigProvider } from './contexts/ConfigContext';
+import { CartProvider } from './contexts/CartContext';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
       <ConfigProvider>
-        <App />
+        <CartProvider>
+          <App />
+        </CartProvider>
       </ConfigProvider>
     </Router>
   </React.StrictMode>
