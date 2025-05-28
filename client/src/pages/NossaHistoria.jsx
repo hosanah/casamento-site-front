@@ -35,6 +35,43 @@ const SectionTitle = styled.h2`
   }
 `;
 
+const SubSectionTitle = styled.h3`
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: var(--font-serif);
+  color: var(--primary);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background-color: var(--primary);
+  }
+`;
+
+const WelcomeSection = styled.div`
+  margin-bottom: 60px;
+  background-color: var(--white);
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: var(--shadow-md);
+`;
+
+const WelcomeText = styled.div`
+  white-space: pre-line;
+  line-height: 1.8;
+  text-align: justify;
+  
+  p {
+    margin-bottom: 15px;
+  }
+`;
+
 const Timeline = styled.div`
   position: relative;
   width: 100%;
@@ -211,9 +248,40 @@ const TimelineImageWithFallback = ({ src, alt }) => {
 
 const NossaHistoria = () => {
   const [timelineEvents, setTimelineEvents] = React.useState([]);
+  const [welcomeText, setWelcomeText] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoadingWelcome, setIsLoadingWelcome] = React.useState(true);
   const [error, setError] = React.useState('');
+  const [welcomeError, setWelcomeError] = React.useState('');
   
+  // Buscar o texto de boas-vindas da rota de conteúdo
+  React.useEffect(() => {
+    const fetchWelcomeText = async () => {
+      try {
+        setIsLoadingWelcome(true);
+        
+        const response = await axios.get(`${API_URL}/api/content/historia`);
+        
+        if (response.data && response.data.content) {
+          setWelcomeText(response.data.content);
+        } else {
+          setWelcomeText('');
+        }
+        
+        setWelcomeError('');
+      } catch (error) {
+        console.error('Erro ao buscar texto de boas-vindas:', error);
+        setWelcomeError('Não foi possível carregar o texto de boas-vindas.');
+        setWelcomeText('');
+      } finally {
+        setIsLoadingWelcome(false);
+      }
+    };
+    
+    fetchWelcomeText();
+  }, []);
+  
+  // Buscar os eventos da timeline
   React.useEffect(() => {
     const fetchStoryEvents = async () => {
       try {
@@ -285,11 +353,40 @@ const NossaHistoria = () => {
     }
   }, [isLoading, timelineEvents.length, error]);
   
+  // Formatar o texto de boas-vindas para exibição
+  const formatWelcomeText = (text) => {
+    if (!text) return '';
+    
+    // Dividir o texto em parágrafos
+    return text.split('\n\n').map((paragraph, index) => (
+      <p key={index}>{paragraph}</p>
+    ));
+  };
+  
   return (
     <PageContainer>
       <PageContent>
         <SectionTitle>Nossa História</SectionTitle>
         
+        {/* Seção de Boas-Vindas */}
+        {isLoadingWelcome ? (
+          <LoadingContainer>
+            <p>Carregando texto de boas-vindas...</p>
+          </LoadingContainer>
+        ) : welcomeError ? (
+          <ErrorContainer>
+            <p>{welcomeError}</p>
+          </ErrorContainer>
+        ) : welcomeText ? (
+          <WelcomeSection>
+            <SubSectionTitle>Boas Vindas</SubSectionTitle>
+            <WelcomeText>
+              {formatWelcomeText(welcomeText)}
+            </WelcomeText>
+          </WelcomeSection>
+        ) : null}
+        
+        {/* Timeline de Eventos */}
         {isLoading ? (
           <LoadingContainer>
             <p>Carregando nossa história...</p>
