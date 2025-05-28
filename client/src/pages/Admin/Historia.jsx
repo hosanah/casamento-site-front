@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_URL from '../../config/api';
+import ImageCropper from '../../components/ImageCropper';
 import {
   AdminContainer,
   Sidebar,
@@ -208,6 +209,8 @@ const Historia = () => {
   const [error, setError] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [originalImage, setOriginalImage] = useState('');
   
   // Referência para o input de arquivo
   const fileInputRef = React.createRef();
@@ -304,14 +307,38 @@ const Historia = () => {
       return;
     }
     
-    setImageFile(file);
+    // Criar preview da imagem original para o cropper
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setOriginalImage(reader.result);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  const handleCropComplete = (croppedImageBlob) => {
+    // Criar um novo arquivo a partir do blob recortado
+    const croppedFile = new File([croppedImageBlob], 'cropped_image.jpg', {
+      type: 'image/jpeg',
+      lastModified: new Date().getTime()
+    });
     
-    // Criar preview da imagem
+    setImageFile(croppedFile);
+    
+    // Criar preview da imagem recortada
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(croppedFile);
+    
+    // Fechar o modal de recorte
+    setShowCropModal(false);
+  };
+  
+  const handleCancelCrop = () => {
+    setShowCropModal(false);
+    setOriginalImage('');
   };
   
   const uploadImage = async () => {
@@ -443,8 +470,8 @@ const Historia = () => {
             <NavLink to="/admin/presentes">Presentes</NavLink>
           </NavItem>
           <NavItem>
-                      <NavLink to="/admin/vendas">Vendas</NavLink>
-                    </NavItem>
+            <NavLink to="/admin/vendas">Vendas</NavLink>
+          </NavItem>
           <NavItem>
             <NavLink to="/admin/config">Configurações</NavLink>
           </NavItem>
@@ -518,7 +545,32 @@ const Historia = () => {
           )}
         </EventsContainer>
         
-        <Modal show={showModal} onClick={handleCloseModal}>
+        {/* Modal de Recorte de Imagem */}
+        <Modal show={showCropModal} onClick={handleCancelCrop} zIndex={2000}>
+          <ModalContent onClick={e => e.stopPropagation()} style={{ maxWidth: '800px' }}>
+            <ModalHeader>
+              <ModalTitle>Recortar Imagem</ModalTitle>
+              <CloseButton onClick={handleCancelCrop}>&times;</CloseButton>
+            </ModalHeader>
+            
+            <div style={{ padding: '20px' }}>
+              <p style={{ marginBottom: '20px', textAlign: 'center' }}>
+                Ajuste o recorte da imagem para que ela fique perfeita na timeline (proporção 440x200)
+              </p>
+              
+              {originalImage && (
+                <ImageCropper
+                  image={originalImage}
+                  onCropComplete={handleCropComplete}
+                  onCancel={handleCancelCrop}
+                />
+              )}
+            </div>
+          </ModalContent>
+        </Modal>
+        
+        {/* Modal de Edição/Adição de Evento */}
+        <Modal show={showModal} onClick={handleCloseModal} zIndex={1000}>
           <ModalContent onClick={e => e.stopPropagation()}>
             <ModalHeader>
               <ModalTitle>{modalMode === 'add' ? 'Adicionar Evento' : 'Editar Evento'}</ModalTitle>
@@ -602,17 +654,13 @@ const Historia = () => {
                   accept="image/*"
                   onChange={handleImageChange}
                 />
-                <small style={{ display: 'block', marginTop: '0.5rem', color: '#666' }}>
-                  Formatos aceitos: JPG, PNG, GIF, WebP. Tamanho máximo: 5MB.
-                </small>
+                <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#666' }}>
+                  Clique na área acima para selecionar uma imagem. Você poderá recortá-la antes de salvar.
+                </div>
               </FormGroup>
               
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-                <SecondaryButton 
-                  type="button" 
-                  onClick={handleCloseModal}
-                  style={{ marginRight: '1rem' }}
-                >
+                <SecondaryButton type="button" onClick={handleCloseModal} style={{ marginRight: '1rem' }}>
                   Cancelar
                 </SecondaryButton>
                 <SubmitButton type="submit" disabled={isLoading}>

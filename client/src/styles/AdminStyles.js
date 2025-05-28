@@ -211,12 +211,11 @@ export const Modal = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: ${props => props.show ? 'flex' : 'none'};
-  justify-content: center;
+  display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
-  z-index: 1000;
+  justify-content: center;
+  z-index: ${props => props.zIndex || 1000};
 `;
-
 export const ModalContent = styled.div`
   background-color: var(--white);
   padding: 2rem;
