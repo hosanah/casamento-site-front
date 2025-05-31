@@ -54,9 +54,61 @@ const AlbumTab = styled.div`
   }
 `;
 
-// Modificado o container do carrossel para centralizar a imagem
-const AlbumCarousel = styled.div`
+// Novo componente para dividir a tela em duas colunas
+const SplitContainer = styled.div`
+  display: flex;
+  flex-direction: row;
   margin-bottom: 40px;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column; // Empilha em dispositivos móveis
+  }
+`;
+
+// Coluna da esquerda para a foto
+const LeftColumn = styled.div`
+  flex: 1;
+  padding-right: 20px;
+  
+  @media (max-width: 768px) {
+    padding-right: 0;
+    margin-bottom: 20px;
+  }
+`;
+
+// Coluna da direita para o texto
+const RightColumn = styled.div`
+  flex: 1;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  @media (max-width: 768px) {
+    padding-left: 0;
+  }
+`;
+
+// Texto descritivo para a coluna da direita
+const PhotoDescription = styled.div`
+  color: var(--text);
+  
+  h3 {
+    color: var(--accent);
+    margin-bottom: 15px;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+  }
+  
+  p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+`;
+
+// Modificado o container do carrossel para ocupar apenas a coluna esquerda
+const AlbumCarousel = styled.div`
   position: relative;
   border-radius: 5px;
   overflow: hidden;
@@ -67,31 +119,29 @@ const AlbumCarousel = styled.div`
   align-items: center;
 `;
 
-// Modificado para exibir a imagem em 50% do tamanho original
+// Modificado para ocupar 100% da coluna esquerda
 const CarouselImage = styled.img`
-  width: 50%; /* Reduzido para 50% do tamanho original */
-  object-fit: contain; /* Alterado para 'contain' para manter a proporção original */
+  width: 100%; 
+  max-height: 400px;
+  object-fit: contain;
   
   @media (max-width: 992px) {
-    width: 60%; /* Um pouco maior em telas médias */
-    max-height: 250px;
+    max-height: 350px;
   }
   
   @media (max-width: 768px) {
-    width: 70%; /* Maior em telas pequenas */
-    max-height: 200px;
+    max-height: 300px;
   }
   
   @media (max-width: 576px) {
-    width: 90%; /* Quase largura total em telas muito pequenas */
-    max-height: 150px;
+    max-height: 250px;
   }
 `;
 
 // Modificado para manter consistência com a imagem
 const CarouselImageFallback = styled.div`
-  width: 50%; /* Reduzido para 50% do tamanho original */
-  height: 300px; /* Altura máxima reduzida proporcionalmente */
+  width: 100%;
+  height: 400px;
   background-color: #f0f0f0;
   display: flex;
   align-items: center;
@@ -100,18 +150,15 @@ const CarouselImageFallback = styled.div`
   font-size: 1.2rem;
   
   @media (max-width: 992px) {
-    width: 60%;
-    height: 250px;
+    height: 350px;
   }
   
   @media (max-width: 768px) {
-    width: 70%;
-    height: 200px;
+    height: 300px;
   }
   
   @media (max-width: 576px) {
-    width: 90%;
-    height: 150px;
+    height: 250px;
   }
 `;
 
@@ -269,6 +316,26 @@ const galleryNames = {
   'festa': 'Festa'
 };
 
+// Textos descritivos para cada galeria
+const galleryDescriptions = {
+  'pre-wedding': {
+    title: 'Ensaio Pré-Wedding',
+    description: 'Momentos especiais capturados antes do grande dia. Estas fotos representam a jornada de amor e companheirismo que nos trouxe até aqui. Cada imagem conta uma história única de nosso relacionamento e da expectativa para o casamento.'
+  },
+  'momentos': {
+    title: 'Momentos Especiais',
+    description: 'Pequenos instantes que se tornaram grandes memórias. Esta galeria reúne momentos significativos de nossa história juntos, desde o início do relacionamento até os preparativos para o casamento. São lembranças que guardaremos para sempre em nossos corações.'
+  },
+  'padrinhos': {
+    title: 'Nossos Padrinhos',
+    description: 'Pessoas especiais que escolhemos para nos acompanhar neste momento tão importante. Nossos padrinhos representam o apoio e o carinho que recebemos de amigos e familiares. São pessoas que admiramos e que têm um lugar especial em nossas vidas.'
+  },
+  'festa': {
+    title: 'A Grande Celebração',
+    description: 'A alegria e emoção do nosso dia especial. Estas fotos capturam a essência da nossa celebração de amor, com todos os detalhes cuidadosamente planejados e os momentos espontâneos que tornaram este dia inesquecível para nós e para todos os convidados.'
+  }
+};
+
 const Album = () => {
   const [activeTab, setActiveTab] = useState('pre-wedding');
   const [activeImage, setActiveImage] = useState(0);
@@ -366,6 +433,12 @@ const Album = () => {
   // Obter a foto atual
   const currentPhoto = hasPhotos ? currentGallery[activeImage] : null;
   
+  // Obter a descrição da galeria atual
+  const currentDescription = galleryDescriptions[activeTab] || {
+    title: galleryNames[activeTab] || 'Álbum de Fotos',
+    description: 'Uma coleção de memórias especiais do nosso relacionamento e casamento.'
+  };
+  
   // Função para formatar URL da imagem
   const formatImageUrl = (imagePath) => {
     if (!imagePath) return null;
@@ -406,22 +479,38 @@ const Album = () => {
             
             {hasPhotos ? (
               <>
-                <AlbumCarousel>
-                  {currentPhoto && (
-                    currentPhoto.image ? (
-                      <CarouselImage 
-                        src={formatImageUrl(currentPhoto.image)}
-                        alt={currentPhoto.title || `Foto ${activeImage + 1} do álbum ${galleryNames[activeTab]}`}
-                      />
-                    ) : (
-                      <CarouselImageFallback>
-                        Imagem não disponível
-                      </CarouselImageFallback>
-                    )
-                  )}
-                  <CarouselPrev onClick={handlePrev}>❮</CarouselPrev>
-                  <CarouselNext onClick={handleNext}>❯</CarouselNext>
-                </AlbumCarousel>
+                {/* Layout dividido: foto à esquerda, texto à direita */}
+                <SplitContainer>
+                  <LeftColumn>
+                    <AlbumCarousel>
+                      {currentPhoto && (
+                        currentPhoto.image ? (
+                          <CarouselImage 
+                            src={formatImageUrl(currentPhoto.image)}
+                            alt={currentPhoto.title || `Foto ${activeImage + 1} do álbum ${galleryNames[activeTab]}`}
+                          />
+                        ) : (
+                          <CarouselImageFallback>
+                            Imagem não disponível
+                          </CarouselImageFallback>
+                        )
+                      )}
+                      <CarouselPrev onClick={handlePrev}>❮</CarouselPrev>
+                      <CarouselNext onClick={handleNext}>❯</CarouselNext>
+                    </AlbumCarousel>
+                  </LeftColumn>
+                  
+                  <RightColumn>
+                    <PhotoDescription>
+                      <h3>{currentDescription.title}</h3>
+                      <p>{currentDescription.description}</p>
+                      {currentPhoto && currentPhoto.title && (
+                        <p><strong>Título da foto:</strong> {currentPhoto.title}</p>
+                      )}
+                      <p><strong>Foto {activeImage + 1} de {currentGallery.length}</strong></p>
+                    </PhotoDescription>
+                  </RightColumn>
+                </SplitContainer>
                 
                 <AlbumGrid>
                   {currentGallery.map((photo, index) => (
