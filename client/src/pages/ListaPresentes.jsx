@@ -472,6 +472,25 @@ const EmptyCartMessage = styled.div`
   text-align: center;
   padding: 30px;
   color: #999;
+  position: relative; // Needed for absolute positioning of CloseButton
+`;
+
+// Add this styled component definition
+const CloseButton = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+
+  &:hover {
+    color: #333;
+  }
 `;
 
 const ListaPresentes = () => {
@@ -863,7 +882,11 @@ const ListaPresentes = () => {
         {/* Modal do carrinho */}
         {showCartModal && (
           <Modal>
-            <ModalContent>
+            {/* Make ModalContent relatively positioned to anchor the CloseButton */}
+            <ModalContent style={{ position: 'relative' }}>
+              {/* Add the CloseButton here, it will be positioned top-right */}
+              <CloseButton onClick={closeCartModal}>&times;</CloseButton>
+              
               <h3>Seu Carrinho</h3>
               
               {cartItems.length > 0 ? (
