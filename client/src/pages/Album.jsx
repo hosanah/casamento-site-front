@@ -54,6 +54,7 @@ const AlbumTab = styled.div`
   }
 `;
 
+// Modificado o container do carrossel para centralizar a imagem
 const AlbumCarousel = styled.div`
   margin-bottom: 40px;
   position: relative;
@@ -61,29 +62,36 @@ const AlbumCarousel = styled.div`
   overflow: hidden;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
+// Modificado para exibir a imagem em 50% do tamanho original
 const CarouselImage = styled.img`
-  width: 100%;
-  height: 600px;
-  object-fit: cover;
+  width: 50%; /* Reduzido para 50% do tamanho original */
+  object-fit: contain; /* Alterado para 'contain' para manter a proporção original */
   
   @media (max-width: 992px) {
-    height: 500px;
+    width: 60%; /* Um pouco maior em telas médias */
+    max-height: 250px;
   }
   
   @media (max-width: 768px) {
-    height: 400px;
+    width: 70%; /* Maior em telas pequenas */
+    max-height: 200px;
   }
   
   @media (max-width: 576px) {
-    height: 300px;
+    width: 90%; /* Quase largura total em telas muito pequenas */
+    max-height: 150px;
   }
 `;
 
+// Modificado para manter consistência com a imagem
 const CarouselImageFallback = styled.div`
-  width: 100%;
-  height: 600px;
+  width: 50%; /* Reduzido para 50% do tamanho original */
+  height: 300px; /* Altura máxima reduzida proporcionalmente */
   background-color: #f0f0f0;
   display: flex;
   align-items: center;
@@ -92,15 +100,18 @@ const CarouselImageFallback = styled.div`
   font-size: 1.2rem;
   
   @media (max-width: 992px) {
-    height: 500px;
+    width: 60%;
+    height: 250px;
   }
   
   @media (max-width: 768px) {
-    height: 400px;
+    width: 70%;
+    height: 200px;
   }
   
   @media (max-width: 576px) {
-    height: 300px;
+    width: 90%;
+    height: 150px;
   }
 `;
 
@@ -398,10 +409,9 @@ const Album = () => {
                 <AlbumCarousel>
                   {currentPhoto && (
                     currentPhoto.image ? (
-                      <SafeImage 
+                      <CarouselImage 
                         src={formatImageUrl(currentPhoto.image)}
                         alt={currentPhoto.title || `Foto ${activeImage + 1} do álbum ${galleryNames[activeTab]}`}
-                        className="carousel-image"
                       />
                     ) : (
                       <CarouselImageFallback>
