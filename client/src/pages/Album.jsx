@@ -505,7 +505,7 @@ const Album = () => {
                       <h3>{currentDescription.title}</h3>
                       <p>{currentDescription.description}</p>
                       {currentPhoto && currentPhoto.title && (
-                        <p><strong>Título da foto:</strong> {currentPhoto.title}</p>
+                        <p></p>
                       )}
                       <p><strong>Foto {activeImage + 1} de {currentGallery.length}</strong></p>
                     </PhotoDescription>
