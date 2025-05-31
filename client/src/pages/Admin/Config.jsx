@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import API_URL from '../../config/api';
+import ImageCropper from '../../components/ImageCropper'; // Importar o componente
 import {
   AdminContainer,
   Sidebar,
@@ -19,7 +20,12 @@ import {
   Input,
   TextArea,
   SuccessMessage,
-  ErrorMessage
+  ErrorMessage,
+  Modal, // Importar Modal
+  ModalContent, // Importar ModalContent
+  ModalHeader, // Importar ModalHeader
+  ModalTitle, // Importar ModalTitle
+  CloseButton // Importar CloseButton
 } from '../../styles/AdminStyles';
 import styled from 'styled-components';
 import { useConfig } from '../../contexts/ConfigContext';
@@ -218,19 +224,25 @@ const DropZone = styled.div`
 const Config = () => {
   const { config, setConfig } = useConfig();
   const [qrCodeImage, setQrCodeImage] = useState(null);
-  const [qrCodePreview, setQrCodePreview] = useState('');
+  const [qrCodePreview, setQrCodePreview] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
   
   // Estado para imagens de fundo
   const [backgroundImages, setBackgroundImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [draggedFiles, setDraggedFiles] = useState([]);
   
+  // Estados para o recorte de imagens de fundo
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [currentImageToCrop, setCurrentImageToCrop] = useState(null);
+  const [filesToCropQueue, setFilesToCropQueue] = useState([]);
+  const [currentFileName, setCurrentFileName] = useState(""); // Para mostrar no modal
+  
   // Referências para os inputs de arquivo
   const fileInputRef = React.createRef();
-  const bgFileInputRef = React.createRef();
+  const bgFileInputRef = React.createRef();;
   
   useEffect(() => {
     fetchConfig();
@@ -317,60 +329,110 @@ const Config = () => {
     bgFileInputRef.current.click();
   };
   
-  const handleBackgroundImageChange = async (e) => {
+    const handleBackgroundImageChange = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     
-    await uploadBackgroundImages(files);
+    // Adicionar arquivos à fila para recorte
+    setFilesToCropQueue(prevQueue => [...prevQueue, ...files]);
+    
+    // Se o modal não estiver aberto, iniciar o processo
+    if (!showCropModal) {
+      processCropQueue(files); // Passa os arquivos recém adicionados
+    }
   };
   
-  const uploadBackgroundImages = async (files) => {
+  const processCropQueue = (queue) => {
+    const fileToProcess = queue[0]; // Pega o primeiro da fila atual
+    if (!fileToProcess) {
+      setShowCropModal(false); // Fecha o modal se a fila estiver vazia
+      setCurrentImageToCrop(null);
+      setCurrentFileName("");
+      // Atualizar a lista de imagens após todos os uploads
+      fetchBackgroundImages();
+      setSuccess("Todas as imagens foram processadas e enviadas!");
+      return;
+    }
+    
+    // Verificar tipo e tamanho antes de abrir o cropper
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(fileToProcess.type)) {
+      setError(`Arquivo "${fileToProcess.name}" não suportado. Apenas imagens são permitidas.`);
+      // Remover arquivo inválido da fila e processar o próximo
+      setFilesToCropQueue(prevQueue => prevQueue.slice(1));
+      processCropQueue(filesToCropQueue.slice(1)); // Processa o restante da fila
+      return;
+    }
+    
+    if (fileToProcess.size > 5 * 1024 * 1024) {
+      setError(`Arquivo "${fileToProcess.name}" muito grande. O tamanho máximo é 5MB.`);
+      // Remover arquivo inválido da fila e processar o próximo
+      setFilesToCropQueue(prevQueue => prevQueue.slice(1));
+      processCropQueue(filesToCropQueue.slice(1)); // Processa o restante da fila
+      return;
+    }
+    
+    // Ler o arquivo como Data URL para o cropper
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCurrentImageToCrop(reader.result);
+      setCurrentFileName(fileToProcess.name);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(fileToProcess);
+  };
+  
+  // Renomear a função original para upload de um único arquivo/blob
+  const uploadSingleBackgroundImage = async (fileOrBlob) => {
     setIsLoading(true);
-    setSuccess('');
-    setError('');
+    setSuccess("");
+    setError("");
     
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const headers = {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       };
       
-      // Upload de cada arquivo
-      for (const file of files) {
-        // Verificar tipo de arquivo
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-        if (!allowedTypes.includes(file.type)) {
-          setError(`Arquivo "${file.name}" não suportado. Apenas imagens são permitidas.`);
-          continue;
-        }
-        
-        // Verificar tamanho do arquivo (5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          setError(`Arquivo "${file.name}" muito grande. O tamanho máximo é 5MB.`);
-          continue;
-        }
-        
-        const formData = new FormData();
-        formData.append('image', file);
-        
-        await axios.post(`${API_URL}/api/background-images/upload`, formData, {
-          headers: {
-            ...headers,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-      }
+      const formData = new FormData();
+      // Se for blob, dar um nome
+      const fileName = fileOrBlob instanceof Blob ? `${Date.now()}_cropped.jpg` : fileOrBlob.name;
+      formData.append("image", fileOrBlob, fileName);
       
-      // Atualizar lista de imagens
-      fetchBackgroundImages();
-      setSuccess('Imagens de fundo enviadas com sucesso!');
+      await axios.post(`${API_URL}/api/background-images/upload`, formData, { headers });
+      
+      // Não atualizar a lista aqui, faremos isso no final da fila
+      // fetchBackgroundImages(); 
+      setSuccess(`Imagem "${fileName}" enviada com sucesso!`);
+      return true; // Indica sucesso
+      
     } catch (error) {
-      console.error('Erro ao fazer upload das imagens de fundo:', error);
-      setError('Erro ao fazer upload das imagens de fundo. Tente novamente.');
+      console.error("Erro ao fazer upload da imagem de fundo:", error);
+      setError(`Erro ao fazer upload da imagem "${fileOrBlob.name || 'recortada'}". Tente novamente.`);
+      return false; // Indica falha
     } finally {
       setIsLoading(false);
-      setDraggedFiles([]);
     }
+  };
+  
+  const handleCropComplete = async (croppedImageBlob) => {
+    const uploadSuccess = await uploadSingleBackgroundImage(croppedImageBlob);
+    
+    // Remover o arquivo processado da fila
+    const remainingQueue = filesToCropQueue.slice(1);
+    setFilesToCropQueue(remainingQueue);
+    
+    // Processar o próximo arquivo da fila
+    processCropQueue(remainingQueue);
+  };
+  
+  const handleCancelCrop = () => {
+    // Remover o arquivo atual da fila e processar o próximo
+    const remainingQueue = filesToCropQueue.slice(1);
+    setFilesToCropQueue(remainingQueue);
+    processCropQueue(remainingQueue);
+    // Poderia adicionar uma confirmação aqui para cancelar toda a fila
   };
   
   const handleDeleteBackgroundImage = async (id) => {
@@ -463,8 +525,13 @@ const Config = () => {
     const files = Array.from(e.dataTransfer.files);
     if (files.length === 0) return;
     
-    setDraggedFiles(files);
-    uploadBackgroundImages(files);
+    // Adicionar arquivos à fila para recorte
+    setFilesToCropQueue(prevQueue => [...prevQueue, ...files]);
+    
+    // Se o modal não estiver aberto, iniciar o processo
+    if (!showCropModal) {
+      processCropQueue(files); // Passa os arquivos recém adicionados
+    }
   };
   
   const handleSubmit = async (e) => {
@@ -574,6 +641,24 @@ const Config = () => {
         
         {success && <SuccessMessage>{success}</SuccessMessage>}
         {error && <ErrorMessage>{error}</ErrorMessage>}
+        
+        {/* Modal de Recorte */}
+        {showCropModal && currentImageToCrop && (
+          <Modal zIndex={2000} show={showCropModal}> {/* Pass show prop */}
+            <ModalContent>
+              <ModalHeader>
+                <ModalTitle>Recortar Imagem: {currentFileName}</ModalTitle>
+                <CloseButton onClick={handleCancelCrop}>&times;</CloseButton>
+              </ModalHeader>
+              <ImageCropper
+                image={currentImageToCrop}
+                onCropComplete={handleCropComplete}
+                onCancel={handleCancelCrop}
+                aspectRatio={16 / 9} // Definir a proporção para a galeria da Home
+              />
+            </ModalContent>
+          </Modal>
+        )}
         
         <form onSubmit={handleSubmit}>
           <ConfigContainer>

@@ -135,7 +135,7 @@ const getCroppedImg = async (imageSrc, pixelCrop) => {
   });
 };
 
-const ImageCropper = ({ image, onCropComplete, onCancel }) => {
+const ImageCropper = ({ image, onCropComplete, onCancel, aspectRatio = 440 / 200 }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
@@ -170,7 +170,7 @@ const ImageCropper = ({ image, onCropComplete, onCancel }) => {
           image={image}
           crop={crop}
           zoom={zoom}
-          aspect={440 / 200}
+          aspect={aspectRatio}
           onCropChange={onCropChange}
           onCropComplete={onCropCompleteCallback}
           onZoomChange={onZoomChange}
