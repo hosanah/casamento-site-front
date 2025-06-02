@@ -760,7 +760,7 @@ const ListaPresentes = () => {
   );
   
   // URL para o WhatsApp com a mensagem personalizada
-  const whatsappUrl = `https://wa.me/5581981292550?text=${encodeURIComponent('Olá! Vim do site para compartilhar meu presente com você')}`;
+  const whatsappUrl = `https://wa.me/558198129255?text=${encodeURIComponent('Olá! Vim do site para compartilhar meu presente com você <3')}`;
   
   if (loading) {
     return (
