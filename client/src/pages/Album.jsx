@@ -54,7 +54,7 @@ const AlbumTab = styled.div`
   }
 `;
 
-// Novo componente para dividir a tela em duas colunas
+// Componente para dividir a tela em duas colunas
 const SplitContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -104,10 +104,11 @@ const PhotoDescription = styled.div`
   p {
     margin-bottom: 15px;
     line-height: 1.6;
+    white-space: pre-wrap;
   }
 `;
 
-// Modificado o container do carrossel para ocupar apenas a coluna esquerda
+// Container do carrossel para ocupar apenas a coluna esquerda
 const AlbumCarousel = styled.div`
   position: relative;
   border-radius: 5px;
@@ -119,7 +120,7 @@ const AlbumCarousel = styled.div`
   align-items: center;
 `;
 
-// Modificado para ocupar 100% da coluna esquerda
+// Imagem do carrossel para ocupar 100% da coluna esquerda
 const CarouselImage = styled.img`
   width: 100%; 
   max-height: 400px;
@@ -138,7 +139,7 @@ const CarouselImage = styled.img`
   }
 `;
 
-// Modificado para manter consistência com a imagem
+// Fallback para manter consistência com a imagem
 const CarouselImageFallback = styled.div`
   width: 100%;
   height: 400px;
@@ -190,6 +191,13 @@ const CarouselPrev = styled(CarouselNav)`
 
 const CarouselNext = styled(CarouselNav)`
   right: 20px;
+`;
+
+const TextCounter = styled.div`
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
 `;
 
 const AlbumGrid = styled.div`
@@ -316,24 +324,80 @@ const galleryNames = {
   'festa': 'Festa'
 };
 
-// Textos descritivos para cada galeria
+// Textos descritivos para cada galeria (agora como arrays)
 const galleryDescriptions = {
-  'pre-wedding': {
-    title: 'Ensaio Pré-Wedding',
-    description: 'Momentos especiais capturados antes do grande dia. Estas fotos representam a jornada de amor e companheirismo que nos trouxe até aqui. Cada imagem conta uma história única de nosso relacionamento e da expectativa para o casamento.'
-  },
-  'momentos': {
-    title: 'Momentos Especiais',
-    description: 'Pequenos instantes que se tornaram grandes memórias. Esta galeria reúne momentos significativos de nossa história juntos, desde o início do relacionamento até os preparativos para o casamento. São lembranças que guardaremos para sempre em nossos corações.'
-  },
-  'padrinhos': {
-    title: 'Nossos Padrinhos',
-    description: 'Pessoas especiais que escolhemos para nos acompanhar neste momento tão importante. Nossos padrinhos representam o apoio e o carinho que recebemos de amigos e familiares. São pessoas que admiramos e que têm um lugar especial em nossas vidas.'
-  },
-  'festa': {
-    title: 'A Grande Celebração',
-    description: 'A alegria e emoção do nosso dia especial. Estas fotos capturam a essência da nossa celebração de amor, com todos os detalhes cuidadosamente planejados e os momentos espontâneos que tornaram este dia inesquecível para nós e para todos os convidados.'
-  }
+  'preWedding': [
+    {
+      title: 'Ensaio Pré-Wedding',
+      description: 'Momentos especiais capturados antes do grande dia. Estas fotos representam a jornada de amor e companheirismo que nos trouxe até aqui.'
+    },
+    {
+      title: 'Nossa História',
+      description: 'Cada foto deste ensaio conta um pouco da nossa história. Momentos de carinho, cumplicidade e amor que construímos ao longo do tempo.'
+    },
+    {
+      title: 'Expectativa para o Grande Dia',
+      description: 'O ensaio pré-wedding foi uma oportunidade de registrar a expectativa e a emoção que sentimos na preparação para o nosso casamento.'
+    },
+    {
+      title: 'Cenários Especiais',
+      description: 'Escolhemos locais que têm significado especial em nossa história para realizar este ensaio, trazendo ainda mais emoção para estas fotografias.'
+    }
+  ],
+  'momentos': [
+    {
+      title: 'Momentos Especiais',
+      description: 'Pequenos instantes que se tornaram grandes memórias. Esta galeria reúne momentos significativos de nossa história juntos.'
+    },
+    {
+      title: 'Primeiros Passos',
+      description: 'Os primeiros momentos de nossa jornada juntos, desde o início do relacionamento até os preparativos para o casamento.'
+    },
+    {
+      title: 'Encontros Memoráveis',
+      description: 'Viagens, encontros com amigos e familiares, celebrações... Cada momento especial que compartilhamos está registrado nestas imagens.'
+    },
+    {
+      title: 'Construindo Memórias',
+      description: 'A construção de nossa história é feita de pequenos momentos que, juntos, formam a base de nosso relacionamento e de nosso futuro.'
+    }
+  ],
+  'padrinhos': [
+    {
+      title: 'Nossos Padrinhos',
+      description: 'Pessoas especiais que escolhemos para nos acompanhar neste momento tão importante. Nossos padrinhos representam o apoio e o carinho que recebemos.'
+    },
+    {
+      title: 'Amizades Valiosas',
+      description: 'Nossos padrinhos são amigos e familiares que têm um lugar especial em nossas vidas e que escolhemos para estarem ao nosso lado neste momento único.'
+    },
+    {
+      title: 'Testemunhas de Nossa União',
+      description: 'Mais do que convidados especiais, nossos padrinhos são testemunhas de nossa união e do compromisso que assumimos um com o outro.'
+    },
+    {
+      title: 'Gratidão e Carinho',
+      description: 'Expressamos nossa gratidão a cada um de nossos padrinhos pelo apoio, carinho e por aceitarem fazer parte deste momento tão especial em nossas vidas.'
+    }
+  ],
+  'festa': [
+    {
+      title: 'A Grande Celebração',
+      description: 'A alegria e emoção do nosso dia especial. Estas fotos capturam a essência da nossa celebração de amor.'
+    },
+    {
+      title: 'Momentos da Cerimônia',
+      description: 'A cerimônia foi repleta de emoção, com votos sinceros e a presença de pessoas queridas que compartilharam conosco este momento único.'
+    },
+    {
+      title: 'Recepção e Comemoração',
+      description: 'A festa foi uma celebração de amor, com música, dança e muita alegria. Cada detalhe foi pensado para tornar este dia inesquecível.'
+    },
+    {
+      title: 'Detalhes e Decoração',
+      description: 'Cada elemento da decoração foi escolhido com carinho para criar um ambiente acolhedor e que refletisse nossa personalidade e história.'
+    }
+  ]
 };
 
 const Album = () => {
@@ -433,10 +497,27 @@ const Album = () => {
   // Obter a foto atual
   const currentPhoto = hasPhotos ? currentGallery[activeImage] : null;
   
-  // Obter a descrição da galeria atual
-  const currentDescription = galleryDescriptions[activeTab] || {
-    title: galleryNames[activeTab] || 'Álbum de Fotos',
-    description: 'Uma coleção de memórias especiais do nosso relacionamento e casamento.'
+  // Obter os textos da galeria atual
+  const getCurrentGalleryTexts = () => {
+    return galleryDescriptions[galleryKeys[activeTab]] || [];
+  };
+  
+  // Obter o texto atual com base no índice da foto ativa
+  // Isso garante que o texto mude automaticamente com a foto
+  const getCurrentText = () => {
+    const texts = getCurrentGalleryTexts();
+    
+    if (texts.length === 0) {
+      return {
+        title: galleryNames[activeTab] || 'Álbum de Fotos',
+        description: 'Uma coleção de memórias especiais do nosso relacionamento e casamento.'
+      };
+    }
+    
+    // Usar o índice da foto para determinar qual texto exibir
+    // Se houver mais fotos que textos, repetir os textos em ciclo
+    const textIndex = activeImage % texts.length;
+    return texts[textIndex];
   };
   
   // Função para formatar URL da imagem
@@ -449,6 +530,13 @@ const Album = () => {
     
     return imagePath;
   };
+  
+  // Obter o texto atual
+  const currentText = getCurrentText();
+  // Obter o número total de textos
+  const totalTexts = getCurrentGalleryTexts().length;
+  // Calcular o índice do texto atual (baseado no índice da foto)
+  const currentTextIndex = totalTexts > 0 ? activeImage % totalTexts : 0;
   
   return (
     <PageContainer className="album-page">
@@ -502,12 +590,19 @@ const Album = () => {
                   
                   <RightColumn>
                     <PhotoDescription>
-                      <h3>{currentDescription.title}</h3>
-                      <p>{currentDescription.description}</p>
+                      <h3>{currentText.title}</h3>
+                      <p>{currentText.description}</p>
                       {currentPhoto && currentPhoto.title && (
-                        <p></p>
+                        <p><strong>Título da foto:</strong> {currentPhoto.title}</p>
                       )}
                       <p><strong>Foto {activeImage + 1} de {currentGallery.length}</strong></p>
+                      
+                      {/* Mostrar o contador de textos se houver mais de um texto */}
+                      {totalTexts > 1 && (
+                        <TextCounter>
+                          Texto {currentTextIndex + 1} de {totalTexts}
+                        </TextCounter>
+                      )}
                     </PhotoDescription>
                   </RightColumn>
                 </SplitContainer>
