@@ -364,22 +364,131 @@ const galleryDescriptions = {
   ],
   'padrinhos': [
     {
-      title: 'Nossos Padrinhos',
-      description: 'Pessoas especiais que escolhemos para nos acompanhar neste momento tão importante. Nossos padrinhos representam o apoio e o carinho que recebemos.'
+      title: 'Rafa e Pedro',
+      description: 'Rafa, Pedrão, meus cumpadis! Vocês são essenciais na nossa vida e ficamos muito felizes em ter vocês ao nosso lado nesse dia tão especial.'
     },
     {
-      title: 'Amizades Valiosas',
-      description: 'Nossos padrinhos são amigos e familiares que têm um lugar especial em nossas vidas e que escolhemos para estarem ao nosso lado neste momento único.'
+      title: 'Tata e Ewerton',
+      description: 'Prima, primo... que alegria ter vocês como nossos padrinhos! Obrigada por aceitarem dividir esse momento único com a gente.'
     },
     {
-      title: 'Testemunhas de Nossa União',
-      description: 'Mais do que convidados especiais, nossos padrinhos são testemunhas de nossa união e do compromisso que assumimos um com o outro.'
+      title: 'Beta e Bruno',
+      description: 'Queridosss! Que honra ter vocês ao nosso lado! É maravilhoso dividir a vida (e as fofoquinhas rs) com vocês. Amamos demais!'
     },
     {
-      title: 'Gratidão e Carinho',
-      description: 'Expressamos nossa gratidão a cada um de nossos padrinhos pelo apoio, carinho e por aceitarem fazer parte deste momento tão especial em nossas vidas.'
+      title: 'Tia Sarah e Tio Guga',
+      description: 'Tia, tio, vocês me acompanham desde a barriga da minha mãe! Meu amor por vocês vem de Deus. Obrigada por estarem conosco nesse momento tão especial.'
+    },
+    {
+      title: 'Tia Morgana e Tio Ivan',
+      description: 'Tia, tio, vocês são muito mais do que tios de consideração — viraram família! Obrigada por fazerem parte do nosso coração e desse dia tão importante.'
+    },
+    {
+      title: 'Tia Morgana e Tio Ivan',
+      description: 'Tia, tio, vocês são muito mais do que tios de consideração — viraram família! Obrigada por fazerem parte do nosso coração e desse dia tão importante.'
+    },
+    {
+      title: 'Tia Lu e Tio Léo',
+      description: 'Tia Lu, tio Léo... como não lembrar que foi na casa de vocês que tudo começou? Obrigada por estarem na nossa história desde o comecinho e por dividirem esse momento com a gente.'
+    },
+    {
+      title: 'Thay',
+      description: 'Amigaa!! O dia que a gente tanto falava chegou, viu?! E agora, você ainda vai ser a mamãe mais linda do mundo! Obrigada por estar na minha vida — nossa amizade é pra sempre!'
+    },
+    {
+      title: 'Ceci & Marcelinho',
+      description: 'Ceci, nossa amizade nasceu nos tempos de cursinho e faculdade, crescendo junto com nossos sonhos. Marcelinho chegou depois, somando ainda mais alegria à nossa história. Ter vocês como padrinhos é celebrar anos de parceria e afeto!'
+    },
+    {
+      title: 'Ceci & Marcelinho',
+      description: 'Ceci, nossa amizade nasceu nos tempos de cursinho e faculdade, crescendo junto com nossos sonhos. Marcelinho chegou depois, somando ainda mais alegria à nossa história. Ter vocês como padrinhos é celebrar anos de parceria e afeto!'
+    },    
+    {
+      title: 'Lara & Filipe',
+      description: 'Filipe, amigo que a faculdade me deu, com quem vivi momentos e histórias marcantes como viagem de Paulo Afonso-BA. Lara chegou para somar, tornando nossa amizade ainda mais forte e verdadeira. Vocês são parte essencial desse momento e nossos padrinhos de coração!'
+    },
+    {
+      title: 'Yas e Tetéia',
+      description: 'Yas, desde o início da facul você foi essencial na minha vida — e tudo ficou ainda mais completo quando Tetéia entrou na sua! Eu e você unidas pela faculdade, Iago e Tetéia pela infância… coincidência linda, né?! Que bom ter vocês com a gente nesse momento tão especial!'
+    },
+    {
+      title: 'Ju e Ronan',
+      description: 'Ronan, amigo de infância, presente em todas as fases da vida, sempre com apoio e lealdade. Juh, uma pessoa querida e verdadeira, que só trouxe ainda mais luz à nossa amizade. Ter vocês como padrinhos é celebrar essa conexão de tantos anos!'
+    },
+    {
+      title: 'Luan',
+      description: 'Luan! Mesmo longe às vezes, sei que posso contar com você sempre. Obrigada por ser esse amigo fiel e estar presente em mais um momento marcante da minha vida!'
+    },
+    {
+      title: 'Ivana e Marcelo',
+      description: 'Ivana, Marcelo, que alegria ter vocês conosco nesse dia! Nossa amizade nasceu pela minha mãe, mas parece que nos conhecemos há anos. Amamos vocês e os meninos!'
+    },
+    {
+      title: 'Tia Dade',
+      description: 'Seu carinho, seus conselhos e sua presença constante foram meu porto seguro em todos os momentos difíceis e felizes. Você sempre esteve ao meu lado, dando força, amor e sabedoria, e sou muito grato por isso. Ter você como madrinha é celebrar o papel fundamental que você tem na minha vida e na nossa história.'
+    },
+    {
+      title: 'Tio Ciso',
+      description: 'Você sempre foi como um pai para mim: presente em cada passo, me levando para o colégio, para o futebol no sport, apoiando nas viagens e me ensinando com muito amor e dedicação. São tantas lembranças que guardo com carinho e saudade, momentos que moldaram quem sou hoje. Ter você ao nosso lado como padrinho é uma forma de agradecer todo esse cuidado e presença constante.'
+    },
+    {
+      title: 'Mika e Bruno',
+      description: 'Mika, você é mais que uma prima, é uma irmã que Deus me deu, um verdadeiro tesouro na minha vida. Bruno, sua hombridade e caráter conquistaram nosso coração e só reforçam o quanto somos gratos por ter vocês conosco. Ter vocês como padrinhos é celebrar uma amizade e amor que vão além da família.'
+    },
+    {
+      title: 'Mika e Bruno',
+      description: 'Mika, você é mais que uma prima, é uma irmã que Deus me deu, um verdadeiro tesouro na minha vida. Bruno, sua hombridade e caráter conquistaram nosso coração e só reforçam o quanto somos gratos por ter vocês conosco. Ter vocês como padrinhos é celebrar uma amizade e amor que vão além da família.'
+    },
+    {
+      title: 'Tia Ceça',
+      description: 'Você foi muito mais que uma tia — foi mãe, amiga e tudo o que eu poderia precisar. Cuidou de mim, pagou meus estudos, passou férias conosco e acolheu a Marília com todo amor do mundo. Seu carinho e apoio são um presente que levarei para sempre, e tê-la como madrinha é uma grande honra.'
+    },
+    {
+      title: 'Wellington',
+      description: 'Primo guerreiro, exemplo de luta e determinação, que me enche de orgulho como pessoa e profissional. Só nós sabemos o quanto você batalhou para chegar onde está hoje. Ter você como padrinho é reconhecer essa força que inspira a todos nós.'
+    },
+    {
+      title: 'Ju',
+      description: 'Mozãooo! Que felicidade te ter comigo nesse dia tão marcante. São tantos momentos desde o ensino médio… Você é parte da minha história e quero te levar pela vida inteira! Obrigada por estar comigo — inclusive agora com Iago.'
+    },
+    {
+      title: 'Igor',
+      description: 'Amigo de infância, parceiro de colégio, pelada e de toda a vida. Um amigo verdadeiro, naquele que sabemos que podemos sempre contar. Ter você como padrinho é celebrar essa amizade que é um presente.'
+    },
+    {
+      title: 'Mari Pê',
+      description: 'Mariii, pequena, filha! Ter você ao nosso lado nesse dia é uma alegria imensa. Nossa amizade vem de muito antes… você faz parte da minha caminhada e mora no meu coração. Te amo!'
+    },
+    {
+      title: 'Matheus Almeida',
+      description: 'Amigo que a faculdade me deu, parceiro de estudos e projetos, como o Concrebuco. Tenho muito orgulho do que você conquistou e do incrível potencial que tem para o futuro. Ter você como padrinho é celebrar essa amizade e confiança que construímos.'
+    },
+    {
+      title: 'Stewart',
+      description: 'Stewarttt, meu irmãozinho do coração! Que honra te ter conosco nesse dia tão especial. Você esteve presente em momentos marcantes da nossa vida, e é incrível poder contar com você mais uma vez!'
+    },
+    {
+      title: 'Vivi Lacerda',
+      description: 'Amiga de infância, com um carinho especial e uma lealdade que só cresce. Humilde e verdadeira, você é uma presença que sempre ilumina. Ter você como madrinha é celebrar essa amizade única e verdadeira.'
+    },
+    {
+      title: 'Jasi',
+      description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
+    },
+    {
+      title: 'Gabriel Peda',
+      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
+    },
+    {
+      title: 'Gabriel Peda',
+      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
+    },
+    {
+      title: 'Tia Bebel e Valdomiro',
+      description: 'Tia Bebel, Valdomiro, obrigada por estarem com a gente nesse momento tão especial. Tia, obrigada por sempre me cuidar e me amar como mãe. Te amo demais!'
     }
-  ],
+  ]
+,
   'festa': [
     {
       title: 'A Grande Celebração',
