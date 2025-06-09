@@ -484,6 +484,10 @@ const galleryDescriptions = {
       description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
     },
     {
+      title: 'Jasi',
+      description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
+    },
+    {
       title: 'Tia Bebel e Valdomiro',
       description: 'Tia Bebel, Valdomiro, obrigada por estarem com a gente nesse momento tão especial. Tia, obrigada por sempre me cuidar e me amar como mãe. Te amo demais!'
     }
