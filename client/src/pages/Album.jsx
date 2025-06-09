@@ -448,12 +448,12 @@ const galleryDescriptions = {
       description: 'Primo guerreiro, exemplo de luta e determinação, que me enche de orgulho como pessoa e profissional. Só nós sabemos o quanto você batalhou para chegar onde está hoje. Ter você como padrinho é reconhecer essa força que inspira a todos nós.'
     },
     {
-      title: 'Ju',
-      description: 'Mozãooo! Que felicidade te ter comigo nesse dia tão marcante. São tantos momentos desde o ensino médio… Você é parte da minha história e quero te levar pela vida inteira! Obrigada por estar comigo — inclusive agora com Iago.'
-    },
-    {
       title: 'Igor',
       description: 'Amigo de infância, parceiro de colégio, pelada e de toda a vida. Um amigo verdadeiro, naquele que sabemos que podemos sempre contar. Ter você como padrinho é celebrar essa amizade que é um presente.'
+    },
+    {
+      title: 'Ju',
+      description: 'Mozãooo! Que felicidade te ter comigo nesse dia tão marcante. São tantos momentos desde o ensino médio… Você é parte da minha história e quero te levar pela vida inteira! Obrigada por estar comigo — inclusive agora com Iago.'
     },
     {
       title: 'Mari Pê',
@@ -472,16 +472,16 @@ const galleryDescriptions = {
       description: 'Amiga de infância, com um carinho especial e uma lealdade que só cresce. Humilde e verdadeira, você é uma presença que sempre ilumina. Ter você como madrinha é celebrar essa amizade única e verdadeira.'
     },
     {
+      title: 'Gabriel Peda',
+      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
+    },
+    {
+      title: 'Gabriel Peda',
+      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
+    },
+    {
       title: 'Jasi',
       description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
-    },
-    {
-      title: 'Gabriel Peda',
-      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
-    },
-    {
-      title: 'Gabriel Peda',
-      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
     },
     {
       title: 'Tia Bebel e Valdomiro',
