@@ -38,7 +38,14 @@ const BackgroundSlide = styled.div`
   opacity: ${props => props.active ? 1 : 0};
   transition: opacity 1s ease-in-out;
   z-index: 0;
+  
+  @media (max-width: 768px) {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #503459; /* Cor de fundo para preencher espaços vazios */
+  }
 `;
+
 
 const HeroOverlay = styled.div`
   position: absolute;
