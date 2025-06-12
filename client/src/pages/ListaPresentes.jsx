@@ -114,9 +114,11 @@ const InCartBadge = styled.div`
 const GiftImage = styled.img`
   width: 100%;
   height: 200px;
-  object-fit: cover;
+  object-fit: contain;
   background-color: #f0f0f0;
+  padding: 10px;
 `;
+
 
 const GiftImageFallback = styled.div`
   width: 100%;
@@ -446,13 +448,16 @@ const CartItemImage = styled.div`
   border-radius: 5px;
   overflow: hidden;
   margin-right: 15px;
+  background-color: #f0f0f0;
   
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 2px;
   }
 `;
+
 
 const CartItemInfo = styled.div`
   flex: 1;
