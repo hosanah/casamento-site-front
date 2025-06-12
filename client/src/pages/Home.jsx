@@ -42,7 +42,7 @@ const BackgroundSlide = styled.div`
   @media (max-width: 768px) {
     background-size: contain;
     background-repeat: no-repeat;
-    background-color: #503459; /* Cor de fundo para preencher espaços vazios */
+    background-color: #B695C0; /* Cor de fundo para preencher espaços vazios */
   }
 `;
 
