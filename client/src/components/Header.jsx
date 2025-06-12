@@ -137,9 +137,9 @@ const Header = () => {
           <NavItem>
             <NavLink to="/lista-de-presentes" active={isActive('/lista-de-presentes')}>Lista de Presentes</NavLink>
           </NavItem>
-          <NavItem>
+          {/* <NavItem>
             <NavLink to="/album" active={isActive('/album')}>Álbum</NavLink>
-          </NavItem>
+          </NavItem> */}
           <NavItem>
             <NavLink to="/confirme-sua-presenca" active={isActive('/confirme-sua-presenca')}>Confirme sua Presença</NavLink>
           </NavItem>
