@@ -488,8 +488,8 @@ const galleryDescriptions = {
       description: 'Stewarttt, meu irmãozinho do coração! Que honra te ter conosco nesse dia tão especial. Você esteve presente em momentos marcantes da nossa vida, e é incrível poder contar com você mais uma vez!'
     },
     {
-      title: 'Tia Bebel e Valdomiro',
-      description: 'Tia Bebel, Valdomiro, obrigada por estarem com a gente nesse momento tão especial. Tia, obrigada por sempre me cuidar e me amar como mãe. Te amo demais!'
+      title: 'Tia Bebel',
+      description: 'Tia Bebel, obrigada por estar com a gente nesse momento tão especial. Tia, obrigada por sempre me cuidar e me amar como mãe. Te amo demais!'
     },
     {
       title: 'Jorge',
