@@ -368,13 +368,13 @@ const galleryDescriptions = {
       description: 'Rafa, Pedrão, meus cumpadis! Vocês são essenciais na nossa vida e ficamos muito felizes em ter vocês ao nosso lado nesse dia tão especial.'
     },
     {
-      title: 'Tata e Ewerton',
-      description: 'Prima, primo... que alegria ter vocês como nossos padrinhos! Obrigada por aceitarem dividir esse momento único com a gente.'
-    },
-    {
       title: 'Beta e Bruno',
       description: 'Queridosss! Que honra ter vocês ao nosso lado! É maravilhoso dividir a vida (e as fofoquinhas rs) com vocês. Amamos demais!'
     },
+    {
+      title: 'Tata e Ewerton',
+      description: 'Prima, primo... que alegria ter vocês como nossos padrinhos! Obrigada por aceitarem dividir esse momento único com a gente.'
+    },    
     {
       title: 'Tia Sarah e Tio Guga',
       description: 'Tia, tio, vocês me acompanham desde a barriga da minha mãe! Meu amor por vocês vem de Deus. Obrigada por estarem conosco nesse momento tão especial.'
@@ -388,21 +388,25 @@ const galleryDescriptions = {
       description: 'Tia, tio, vocês são muito mais do que tios de consideração — viraram família! Obrigada por fazerem parte do nosso coração e desse dia tão importante.'
     },
     {
-      title: 'Tia Lu e Tio Léo',
-      description: 'Tia Lu, tio Léo... como não lembrar que foi na casa de vocês que tudo começou? Obrigada por estarem na nossa história desde o comecinho e por dividirem esse momento com a gente.'
+      title: 'Biel e Lari',
+      description: 'Biel, meu primo querido… Lari, amiga de longa data, dos tempos de colégio e do projeto social. Que alegria dividir esse momento com vocês dois, que fazem parte da nossa história com tanto carinho! Que a vida continue unindo nossas histórias com amor e amizade.'
     },
     {
       title: 'Thay',
       description: 'Amigaa!! O dia que a gente tanto falava chegou, viu?! E agora, você ainda vai ser a mamãe mais linda do mundo! Obrigada por estar na minha vida — nossa amizade é pra sempre!'
     },
     {
+      title: 'Luan',
+      description: 'Luan! Mesmo longe às vezes, sei que posso contar com você sempre. Obrigada por ser esse amigo fiel e estar presente em mais um momento marcante da minha vida!'
+    },
+    {
       title: 'Ceci & Marcelinho',
       description: 'Ceci, nossa amizade nasceu nos tempos de cursinho e faculdade, crescendo junto com nossos sonhos. Marcelinho chegou depois, somando ainda mais alegria à nossa história. Ter vocês como padrinhos é celebrar anos de parceria e afeto!'
     },
     {
       title: 'Ceci & Marcelinho',
       description: 'Ceci, nossa amizade nasceu nos tempos de cursinho e faculdade, crescendo junto com nossos sonhos. Marcelinho chegou depois, somando ainda mais alegria à nossa história. Ter vocês como padrinhos é celebrar anos de parceria e afeto!'
-    },    
+    }, 
     {
       title: 'Lara & Filipe',
       description: 'Filipe, amigo que a faculdade me deu, com quem vivi momentos e histórias marcantes como viagem de Paulo Afonso-BA. Lara chegou para somar, tornando nossa amizade ainda mais forte e verdadeira. Vocês são parte essencial desse momento e nossos padrinhos de coração!'
@@ -414,10 +418,6 @@ const galleryDescriptions = {
     {
       title: 'Ju e Ronan',
       description: 'Ronan, amigo de infância, presente em todas as fases da vida, sempre com apoio e lealdade. Juh, uma pessoa querida e verdadeira, que só trouxe ainda mais luz à nossa amizade. Ter vocês como padrinhos é celebrar essa conexão de tantos anos!'
-    },
-    {
-      title: 'Luan',
-      description: 'Luan! Mesmo longe às vezes, sei que posso contar com você sempre. Obrigada por ser esse amigo fiel e estar presente em mais um momento marcante da minha vida!'
     },
     {
       title: 'Ivana e Marcelo',
@@ -464,33 +464,41 @@ const galleryDescriptions = {
       description: 'Amigo que a faculdade me deu, parceiro de estudos e projetos, como o Concrebuco. Tenho muito orgulho do que você conquistou e do incrível potencial que tem para o futuro. Ter você como padrinho é celebrar essa amizade e confiança que construímos.'
     },
     {
+      title: 'Vivi Lacerda',
+      description: 'Amiga de infância, com um carinho especial e uma lealdade que só cresce. Humilde e verdadeira, você é uma presença que sempre ilumina. Ter você como madrinha é celebrar essa amizade única e verdadeira.'
+    },    
+    {
+      title: 'Gabriel Peda',
+      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
+    },
+    {
+      title: 'Gabriel Peda',
+      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
+    },
+    {
+      title: 'Jasi',
+      description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
+    },
+    {
+      title: 'Jasi',
+      description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
+    },
+    {
       title: 'Stewart',
       description: 'Stewarttt, meu irmãozinho do coração! Que honra te ter conosco nesse dia tão especial. Você esteve presente em momentos marcantes da nossa vida, e é incrível poder contar com você mais uma vez!'
     },
     {
-      title: 'Vivi Lacerda',
-      description: 'Amiga de infância, com um carinho especial e uma lealdade que só cresce. Humilde e verdadeira, você é uma presença que sempre ilumina. Ter você como madrinha é celebrar essa amizade única e verdadeira.'
-    },
-    {
-      title: 'Gabriel Peda',
-      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
-    },
-    {
-      title: 'Gabriel Peda',
-      description: 'Amigo da faculdade, irreverente e guerreiro, com uma inteligência e sinceridade que inspiram. Um cara de sangue bom, divertido e verdadeiro, que levo pra vida toda. Ter você como padrinho é valorizar essa amizade que é puro ouro!'
-    },
-    {
-      title: 'Jasi',
-      description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
-    },
-    {
-      title: 'Jasi',
-      description: 'Jasii, nossa eterna financeiro! hahaha Que alegria dividir esse dia contigo. Passamos por estresses, conquistas, alegrias — e hoje celebramos juntos mais uma vitória!'
-    },
-    {
       title: 'Tia Bebel e Valdomiro',
       description: 'Tia Bebel, Valdomiro, obrigada por estarem com a gente nesse momento tão especial. Tia, obrigada por sempre me cuidar e me amar como mãe. Te amo demais!'
-    }
+    },
+    {
+      title: 'Jorge',
+      description: 'Jorgee!! Se hoje estamos aqui, uma parte é culpa sua, viu? Foi você quem apresentou a gente lá na época do colégio e cursinho — e desde então, seguimos juntos também na faculdade e na vida. Obrigado por ser esse amigo que fez (e faz!) parte da nossa história desde o comecinho. É uma honra ter você com a gente nesse momento tão especial.'
+    },
+    {
+      title: 'Mateus Sales e Mayara',
+      description: 'Sales entrou nas nossas vidas pelo Concrebuco e nunca mais saiu. Diz que é nosso filho (e a gente até acredita kkk). Foram tantos congressos, noites no mesmo quarto e histórias juntos… E agora com Mayara ao lado, fica ainda melhor ter vocês como nossos padrinhos.'
+    },
   ]
 ,
   'festa': [
