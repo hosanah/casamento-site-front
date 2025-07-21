@@ -496,8 +496,16 @@ const galleryDescriptions = {
       description: 'Jorgee!! Se hoje estamos aqui, uma parte é culpa sua, viu? Foi você quem apresentou a gente lá na época do colégio e cursinho — e desde então, seguimos juntos também na faculdade e na vida. Obrigado por ser esse amigo que fez (e faz!) parte da nossa história desde o comecinho. É uma honra ter você com a gente nesse momento tão especial.'
     },
     {
-      title: 'Mateus Sales e Mayara',
-      description: 'Sales entrou nas nossas vidas pelo Concrebuco e nunca mais saiu. Diz que é nosso filho (e a gente até acredita kkk). Foram tantos congressos, noites no mesmo quarto e histórias juntos… E agora com Mayara ao lado, fica ainda melhor ter vocês como nossos padrinhos.'
+      title: 'Mateus Sales',
+      description: 'Sales entrou nas nossas vidas pelo Concrebuco e nunca mais saiu. Diz que é nosso filho (e a gente até acredita kkk). Foram tantos congressos, noites no mesmo quarto e histórias juntos… Um grande amigo que estará em mais um momento especial conosco.'
+    },
+    {
+      title: 'Tia Mita',
+      description: 'Tia querida, sua presença na minha vida sempre foi um presente de amor e cuidado, mesmo à distância. Ter você como minha madrinha é uma honra imensa e uma forma de agradecer por tudo que fez e faz por mim. Amo você de todo coração!'
+    },
+    {
+      title: 'Tia Mita',
+      description: 'Tia querida, sua presença na minha vida sempre foi um presente de amor e cuidado, mesmo à distância. Ter você como minha madrinha é uma honra imensa e uma forma de agradecer por tudo que fez e faz por mim. Amo você de todo coração!'
     },
   ]
 ,
