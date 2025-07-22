@@ -352,7 +352,7 @@ const AdminVendas = () => {
   const handleSyncOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/mercadolivre/orders`, {
+      const response = await axios.get(`${API_URL}/api/mercadopago/payments`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuccess(response.data.message || 'Vendas sincronizadas com sucesso!');
