@@ -263,6 +263,7 @@ const AdminVendas = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -343,10 +344,25 @@ const AdminVendas = () => {
       setLoading(false);
     }
   }, []);
-  
+
   useEffect(() => {
     fetchSales();
   }, [fetchSales]);
+
+  const handleSyncOrders = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/api/mercadolivre/orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSuccess(response.data.message || 'Vendas sincronizadas com sucesso!');
+      setError('');
+      fetchSales();
+    } catch (err) {
+      console.error('Erro ao sincronizar vendas:', err);
+      setError('Não foi possível sincronizar as vendas. Tente novamente.');
+    }
+  };
   
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -629,6 +645,7 @@ const AdminVendas = () => {
         <Content>
           <Header>
             <PageTitle>Vendas</PageTitle>
+            <ActionButton onClick={handleSyncOrders}>Sincronizar</ActionButton>
             <SecondaryButton onClick={handleLogout}>Sair</SecondaryButton>
           </Header>
           <LoadingContainer>Carregando vendas...</LoadingContainer>
@@ -678,6 +695,7 @@ const AdminVendas = () => {
         <Content>
           <Header>
             <PageTitle>Vendas</PageTitle>
+            <ActionButton onClick={handleSyncOrders}>Sincronizar</ActionButton>
             <SecondaryButton onClick={handleLogout}>Sair</SecondaryButton>
           </Header>
           <ErrorMessage>{error}</ErrorMessage>
@@ -726,9 +744,12 @@ const AdminVendas = () => {
       <Content>
         <Header>
           <PageTitle>Vendas</PageTitle>
+          <ActionButton onClick={handleSyncOrders}>Sincronizar</ActionButton>
           <SecondaryButton onClick={handleLogout}>Sair</SecondaryButton>
         </Header>
-        
+
+        {success && <SuccessMessage>{success}</SuccessMessage>}
+
         <StatsContainer>
           <StatCard>
             <h3>Total de Vendas</h3>
