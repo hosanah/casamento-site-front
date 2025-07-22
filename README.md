@@ -1,6 +1,6 @@
 # Site de Casamento - Marília & Iago
 
-Este é um site completo para casamento com frontend em React e backend em Node.js, desenvolvido para Marília e Iago. O projeto utiliza uma arquitetura monorepo com PNPM workspaces.
+Este repositório contém apenas o frontend do site de casamento de Marília e Iago, desenvolvido em React.
 
 ## Tecnologias Utilizadas
 
@@ -10,29 +10,19 @@ Este é um site completo para casamento com frontend em React e backend em Node.
 - React Router
 - Styled Components
 
-### Backend
-- Node.js
-- Express
-- Prisma ORM
-- SQLite
-- JWT para autenticação
-
 ## Estrutura do Projeto
 
 ```
-casamento-site/
-├── apps/
-│   ├── client/         # Frontend React
-│   └── server/         # Backend Node.js
-├── pnpm-workspace.yaml
-└── package.json
+casamento-site-front/
+├── client/              # Aplicação React
+├── Dockerfile
+└── README.md
 ```
 
 ## Requisitos
 
 - Node.js 18 ou superior
-- PNPM 8 ou superior
-- SQLite 3
+- npm 9 ou superior
 
 ## Instalação e Configuração
 
@@ -40,71 +30,30 @@ casamento-site/
 
 ```bash
 git clone [URL_DO_REPOSITORIO]
-cd casamento-site
-pnpm install
+cd casamento-site-front
+cd client
+npm install
 ```
 
-### 2. Configure o Backend
+### 2. Configure o Frontend
 
 ```bash
-cd apps/server
+cd client
 
-# Crie um arquivo .env com as seguintes variáveis
-DATABASE_URL="file:../../../database.sqlite"
-JWT_SECRET="casamento-marilia-iago-secret-key"
-PORT=3001
-
-# Execute as migrações do banco de dados
-npx prisma migrate dev
-
-# Popule o banco de dados com dados iniciais
-npx prisma db seed
-```
-
-### 3. Configure o Frontend
-
-```bash
-cd apps/client
-
-# Crie um arquivo .env com as seguintes variáveis
-VITE_API_URL="http://localhost:3001"
+# Crie um arquivo .env com a seguinte variável
+VITE_BACKEND_URL="http://localhost:3001"
 ```
 
 ## Executando o Projeto Localmente
 
-### 1. Inicie o Backend
-
 ```bash
-cd apps/server
+cd client
 npm run dev
 ```
 
-### 2. Inicie o Frontend
-
-```bash
-cd apps/client
-npm run dev
-```
-
-O frontend estará disponível em `http://localhost:5173` e o backend em `http://localhost:3001`.
+O site estará disponível em `http://localhost:5173`.
 
 ## Deploy do Projeto
-
-### Deploy do Backend (Render.com)
-
-1. Crie uma conta no [Render](https://render.com/)
-2. Clique em "New" e selecione "Web Service"
-3. Conecte seu repositório GitHub
-4. Configure o serviço:
-   - Nome: `casamento-marilia-iago-backend`
-   - Diretório raiz: `apps/server`
-   - Comando de build: `npm install && npx prisma generate`
-   - Comando de start: `npm start`
-   - Adicione as variáveis de ambiente:
-     - `DATABASE_URL` (use um banco PostgreSQL do Render)
-     - `JWT_SECRET`
-     - `PORT`
-5. Clique em "Create Web Service"
 
 ### Deploy do Frontend (Vercel)
 
@@ -113,11 +62,11 @@ O frontend estará disponível em `http://localhost:5173` e o backend em `http:/
 3. Importe seu repositório GitHub
 4. Configure o projeto:
    - Framework Preset: Vite
-   - Diretório raiz: `apps/client`
+   - Diretório raiz: `client`
    - Comando de build: `npm run build`
    - Diretório de saída: `dist`
    - Adicione as variáveis de ambiente:
-     - `VITE_API_URL` (URL do backend no Render)
+     - `VITE_BACKEND_URL` (URL do backend)
 5. Clique em "Deploy"
 
 ### Deploy do Frontend (Netlify)
@@ -126,11 +75,11 @@ O frontend estará disponível em `http://localhost:5173` e o backend em `http:/
 2. Clique em "New site from Git"
 3. Conecte seu repositório GitHub
 4. Configure o deploy:
-   - Diretório base: `apps/client`
+   - Diretório base: `client`
    - Comando de build: `npm run build`
    - Diretório de publicação: `dist`
    - Adicione as variáveis de ambiente:
-     - `VITE_API_URL` (URL do backend no Render)
+     - `VITE_BACKEND_URL` (URL do backend)
 5. Clique em "Deploy site"
 
 ## Acessando o Painel Administrativo
@@ -168,7 +117,7 @@ A paleta de cores atual é:
 - Roxo escuro: #503459
 - Branco: #FFFFFF
 
-Para alterar a paleta, edite o arquivo `apps/client/src/styles/GlobalStyles.jsx` e atualize as variáveis CSS no seletor `:root`.
+Para alterar a paleta, edite o arquivo `client/src/styles/GlobalStyles.jsx` e atualize as variáveis CSS no seletor `:root`.
 
 ### Alterando Textos e Conteúdo
 
