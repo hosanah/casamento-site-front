@@ -178,7 +178,22 @@ const PixContainer = styled.div`
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  
+
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+  }
+`;
+
+const LojaContainer = styled.div`
+  background-color: var(--white);
+  border-radius: 5px;
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+
   @media (max-width: 768px) {
     padding: 30px 20px;
   }
@@ -795,21 +810,27 @@ const ListaPresentes = () => {
         <SectionTitle>Lista de Presentes</SectionTitle>
         
         <GiftTabs>
-          <GiftTab 
-            active={activeTab === 'online'} 
+          <GiftTab
+            active={activeTab === 'online'}
             onClick={() => setActiveTab('online')}
           >
             Lista Online
           </GiftTab>
-          <GiftTab 
-            active={activeTab === 'pix'} 
+          <GiftTab
+            active={activeTab === 'pix'}
             onClick={() => setActiveTab('pix')}
           >
             PIX
           </GiftTab>
+          <GiftTab
+            active={activeTab === 'loja'}
+            onClick={() => setActiveTab('loja')}
+          >
+            Loja Física
+          </GiftTab>
         </GiftTabs>
-        
-        {activeTab === 'online' ? (
+
+        {activeTab === 'online' && (
           <>
             <GiftGrid>
               {gifts.filter(gift => gift.stock > 0).map(gift => {
@@ -857,11 +878,13 @@ const ListaPresentes = () => {
               </CartButton>
             )}
           </>
-        ) : (
+        )}
+
+        {activeTab === 'pix' && (
           <PixContainer>
             <h3>Contribua com o valor que desejar</h3>
             <p>Você pode nos ajudar com qualquer valor através do PIX abaixo:</p>
-            
+
             <QRCodeWithFallback src={pixInfo.qrCodeImage} alt="QR Code PIX" />
             
             <p>Ou copie a chave PIX:</p>
@@ -877,6 +900,30 @@ const ListaPresentes = () => {
               Avisar sobre o presente
             </WhatsAppButton>
           </PixContainer>
+        )}
+
+        {activeTab === 'loja' && (
+          <LojaContainer>
+            <p>🎁 Lista Presencial de Presentes – Ferreira Costa</p>
+            <p>
+              Para quem prefere fazer suas compras presencialmente, criamos com
+              muito carinho uma lista de presentes na loja Ferreira Costa.
+            </p>
+            <p>
+              📍 A lista foi cadastrada na unidade Tamarineira, mas você
+              pode acessá-la em qualquer loja Ferreira Costa, basta informar os
+              dados abaixo no balcão de atendimento:
+            </p>
+            <ul>
+              <li>Nome dos noivos: Marília Cavalcanti e Iago Santana</li>
+              <li>Data do casamento: 20 de setembro de 2025</li>
+            </ul>
+            <p>Fiquem à vontade para escolher o que desejarem!</p>
+            <p>
+              A sua presença nesse momento tão especial já é um presente para
+              nós. 💛
+            </p>
+          </LojaContainer>
         )}
         
         {/* Modal de checkout para um único presente */}
